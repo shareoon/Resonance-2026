@@ -715,15 +715,35 @@
     document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
   }
 
-  function submitReg() {
+ function submitReg() {
     const fname = document.getElementById('r-fname').value.trim();
+    const lname = document.getElementById('r-lname').value.trim();
     const email = document.getElementById('r-email').value.trim();
+    const phone = document.getElementById('r-phone').value.trim();
+    const college = document.getElementById('r-college').value.trim();
+    const year  = document.getElementById('r-year').value;
     const pass  = document.getElementById('r-pass').value;
+    const team  = document.getElementById('r-team').value.trim();
+
     if (!fname || !email) { alert('Please enter your name and email.'); return; }
     if (!pass) { alert('Please select a pass type.'); return; }
-    // Replace with Formspree or your own backend endpoint
-    document.getElementById('reg-form').style.display = 'none';
-    document.getElementById('reg-success').style.display = 'block';
+
+    const competitions = [...document.querySelectorAll('.checkbox-group input:checked')]
+      .map(cb => cb.value).join(', ');
+
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    fetch('https://script.google.com/macros/s/AKfycby0KxvuzvrViPiOVMzcIsBf5_0xkAFwKuYpWHk5iOy7_JtQqVoD-7EcAdvOiSkzx2I/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fname, lname, email, phone, college, year, pass, competitions, team })
+    }).catch(err => console.error('Submission error:', err)).finally(() => {
+      document.getElementById('reg-form').style.display = 'none';
+      document.getElementById('reg-success').style.display = 'block';
+    });
   }
 </script>
 </body>
