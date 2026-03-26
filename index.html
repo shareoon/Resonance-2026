@@ -33,6 +33,28 @@
     });
 
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("heroVideo");
+
+    // 1. Force muted state (Required for mobile autoplay)
+    video.muted = true;
+    video.defaultMuted = true;
+
+    // 2. Explicitly call play()
+    const playVideo = () => {
+        video.play().catch(err => {
+            console.log("Autoplay prevented. Waiting for user interaction.");
+        });
+    };
+
+    playVideo();
+
+    // 3. Fallback: Start video on first touch if browser blocked it
+    document.body.addEventListener('touchstart', () => {
+        if (video.paused) playVideo();
+    }, { once: true });
+});
   </script>
 
   <style>
