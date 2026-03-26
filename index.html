@@ -467,83 +467,6 @@
     .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    @media (max-width: 768px) {
-
-      /* ===== HEADER LAYOUT ===== */
-      header {
-        height: 100svh;
-        padding: 5rem 1.5rem 2rem;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-    
-      /* ===== HERO VIDEO ===== */
-      .hero-video-wrap video {
-        opacity: 0.35; /* better readability on small screens */
-      }
-    
-      /* ===== MAIN TITLE ===== */
-      h1 {
-        font-size: clamp(2rem, 12vw, 4rem);
-        line-height: 1.05;
-        letter-spacing: -0.02em;
-    
-        max-width: 95vw;
-    
-        -webkit-text-stroke: 1.5px #ff3b3b;
-      }
-    
-      /* ===== BIG TEXT PART ===== */
-      h1 .big {
-        font-size: clamp(3rem, 14vw, 5rem);
-        left: 0;
-      }
-    
-      /* ===== YEAR ALIGNMENT FIX ===== */
-      h1 .year {
-        left: 0;
-      }
-    
-      /* ===== CONSISTENT STROKE ===== */
-      h1,
-      h1 .outline,
-      h1 .big,
-      h1 .year {
-        -webkit-text-stroke: 1.5px #ff3b3b;
-      }
-    
-      /* ===== TOP LINE ===== */
-      h1::before {
-        content: "";
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    
-        width: 92%;
-        height: clamp(2px, 0.8vw, 5px);
-        border: clamp(1px, 0.3vw, 2px) solid #ff2a2a;
-    
-        top: -8px;
-      }
-    
-      /* ===== BOTTOM LINE ===== */
-      .big::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    
-        width: 92%;
-        height: clamp(2px, 0.8vw, 5px);
-        border: clamp(1px, 0.3vw, 2px) solid #ff2a2a;
-    
-        bottom: 8px;
-      }
-    
-    
-    }
-
     @media (max-width: 860px) {
       nav ul { display: none; }
       .about-layout, .reg-layout { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -586,8 +509,8 @@
     <li><a href="#competitions">Competitions</a></li>
     <li><a href="#schedule">Schedule</a></li>
     <li><a href="#register">Register</a></li>
+    <li><button id="soundToggle" class="sound-btn">🔇</button></li>
   </ul>
-  <button id="soundToggle" class="sound-btn">🔇</button>
   <a href="#register" class="nav-register">Register Now</a>
 </nav>
 
