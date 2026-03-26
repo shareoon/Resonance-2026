@@ -378,7 +378,7 @@
         width: 100%;
         height: 6px;
         border: 2px solid #ff2a2a;
-        top: -12px;
+        top: -14px;
       }
     
       /* Bottom line */
@@ -546,21 +546,31 @@
       .form-row { grid-template-columns: 1fr; }
     }
 
+    /* Updated button style */
     .sound-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;   /* use right instead of left */
-      z-index: 1000;
-    
-      background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,0,0,0.4);
+      position: relative; /* Changed from fixed */
+      background: rgba(180, 0, 0, 0.1);
+      border: 1px solid var(--st-red);
       color: #fff;
-      font-size: 0.5rem;
-    
-      padding: 0.3rem 0.5rem;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
       cursor: pointer;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 10px rgba(255,0,0,0.4);
+      backdrop-filter: blur(4px);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sound-btn:hover {
+      background: var(--st-red);
+      box-shadow: 0 0 15px var(--st-glow);
+    }
+
+    /* Remove margin-bottom from the eyebrow since the container handles it now */
+    .hero-eyebrow {
+      margin-bottom: 0 !important;
     }
     
   </style>
@@ -590,8 +600,10 @@
 
   <div class="hero-glow"></div>
   <div class="hero-glow-2"></div>
-  <p class="hero-eyebrow">Annual Technical Festival — 2026</p>
-  <button id="soundToggle" class="sound-btn">🔇</button>
+  <div class="hero-header-flex">
+    <p class="hero-eyebrow">Annual Technical Festival — 2026</p>
+    <button id="soundToggle" class="sound-btn">🔇</button>
+  </div>
   <h1><span class="big">res</span><span class="outline">ona</span><span class="big">nce</span><br><span class="year">2026</span></h1>
   <p class="hero-tagline">Where engineering meets innovation. Three days of competitions, talks, and breakthroughs.</p>
   <div class="hero-meta">
