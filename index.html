@@ -250,15 +250,15 @@
       align-self: center;
       text-align: center;
       font-weight: 600;
-      font-size: clamp(3rem, 14vw, 14rem);
-      line-height: 0.68;
-      letter-spacing: -0.05em;
+      font-size: clamp(2.2rem, 10vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
       text-transform: uppercase;
       position: relative;
       display: inline-block;
 
       color: transparent;                 /* Make text fill transparent */
-      -webkit-text-stroke: 3px #ff3b3b;  /* Stroke color */
+      -webkit-text-stroke: clamp(1px, 0.4vw, 3px) #ff3b3b;  /* Stroke color */
       
       /* Neon glow 
       text-shadow:
@@ -284,7 +284,7 @@
     }
 
     h1 .big {
-      font-size: clamp(7rem, 17vw, 17rem);
+      font-size: clamp(3.5rem, 12vw, 13rem);
       left: 0;
     }
 
