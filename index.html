@@ -78,10 +78,10 @@
 
     @font-face {
       font-family: 'ITC Benguiat'; /* A unique name for your font */
-      src: url('fonts/ITCBenguiatStdBoldCn.woff2') format('woff2'),
-          url('fonts/ITCBenguiatStdBoldCn.woff') format('woff'),
-          url('fonts/ITCBenguiatStdBoldCn.otf') format('opentype'), /* Include the OTF as a fallback */
-          url('fonts/ITCBenguiatStdBoldCn.ttf') format('truetype');
+      src: url('fonts/ITCBenguiatStdMediumCn.woff2') format('woff2'),
+          url('fonts/ITCBenguiatStdMediumCn.woff') format('woff'),
+          url('fonts/ITCBenguiatStdMediumCn.otf') format('opentype'), /* Include the OTF as a fallback */
+          url('fonts/ITCBenguiatStdMediumCn.ttf') format('truetype');
       font-weight: normal; /* Specify the weight of this specific file */
       font-style: normal; /* Specify the style of this specific file */
       font-display: swap; /* Controls font loading behavior for better performance */
@@ -273,23 +273,26 @@
       color: transparent;                 /* Transparent fill */
       -webkit-text-stroke: 3px #ff3b3b;  /* Same stroke for consistency */
       
-      /* Neon glow 
+      /* Neon glow
       text-shadow:
         0 0 5px #ff2a2a,
         0 0 15px #ff2a2a,
-        0 0 30px #ff2a2a;*/
+        0 0 30px #ff2a2a; */
       
       vertical-align: top;
       position: relative;
+      bottom: -15%;
     }
 
     h1 .big {
       font-size: clamp(7rem, 17vw, 17rem);
-      left: 0;
+      left: 0%;
     }
 
     h1 .year {
-      left: -2%;
+      font-size: clamp(3rem, 13vw, 13rem);
+      left: -0.7%;
+      top: 10%;
     }
 
     /* top & bottom rectangular lines without glow */
@@ -298,7 +301,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 100%;
+      width: 98%;
       height: 7px;
       border: 2px solid #ff2a2a;
       background: transparent;
@@ -309,9 +312,10 @@
     .big::after {
       content: "";
       position: absolute;
+      top: 75%;
       left: 50%;
       transform: translateX(-50%);
-      width: 100%;
+      width: 95%;
       height: 7px;
       border: 2px solid #ff2a2a;
       background: transparent;
@@ -319,6 +323,49 @@
       box-shadow: none;
     }
 
+    @media (max-width: 768px) {
+
+      h1 {
+        font-size: clamp(2.5rem, 12vw, 6rem);
+        line-height: 0.8;
+        letter-spacing: -0.03em;
+        -webkit-text-stroke: 2px #ff3b3b;
+      }
+
+      h1 .outline,
+      h1 .big,
+      h1 .year {
+        -webkit-text-stroke: 2px #ff3b3b;
+        bottom: -10%;
+      }
+
+      h1 .big {
+        font-size: clamp(4rem, 14vw, 8rem);
+        left: 0;
+      }
+
+      h1 .year {
+        font-size: clamp(2rem, 10vw, 5rem);
+        left: 0;
+        top: 5%;
+      }
+
+      /* Top line */
+      h1::before {
+        width: 95%;
+        height: 5px;
+        border: 1.5px solid #ff2a2a;
+        top: -10px;
+      }
+
+      /* Bottom line */
+      .big::after {
+        width: 92%;
+        height: 5px;
+        border: 1.5px solid #ff2a2a;
+        top: 80%;
+      }
+    }
     
 
     .hero-tagline { margin-top: 2rem; font-size: 1.05rem; color: var(--muted); max-width: 500px; font-weight: 300; animation: fadeUp 0.8s 0.2s ease both; }
