@@ -250,15 +250,15 @@
       align-self: center;
       text-align: center;
       font-weight: 600;
-      font-size: clamp(2.2rem, 10vw, 10rem);
-      line-height: 0.9;
-      letter-spacing: -0.03em;
+      font-size: clamp(3rem, 14vw, 14rem);
+      line-height: 0.68;
+      letter-spacing: -0.05em;
       text-transform: uppercase;
       position: relative;
       display: inline-block;
 
       color: transparent;                 /* Make text fill transparent */
-      -webkit-text-stroke: clamp(1px, 0.4vw, 3px) #ff3b3b;  /* Stroke color */
+      -webkit-text-stroke: 3px #ff3b3b;  /* Stroke color */
       
       /* Neon glow 
       text-shadow:
@@ -284,7 +284,7 @@
     }
 
     h1 .big {
-      font-size: clamp(3.5rem, 12vw, 13rem);
+      font-size: clamp(7rem, 17vw, 17rem);
       left: 0;
     }
 
@@ -466,6 +466,83 @@
 
     .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+
+      /* ===== HEADER LAYOUT ===== */
+      header {
+        height: 100svh;
+        padding: 5rem 1.5rem 2rem;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+    
+      /* ===== HERO VIDEO ===== */
+      .hero-video-wrap video {
+        opacity: 0.35; /* better readability on small screens */
+      }
+    
+      /* ===== MAIN TITLE ===== */
+      h1 {
+        font-size: clamp(2rem, 12vw, 4rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+    
+        max-width: 95vw;
+    
+        -webkit-text-stroke: 1.5px #ff3b3b;
+      }
+    
+      /* ===== BIG TEXT PART ===== */
+      h1 .big {
+        font-size: clamp(3rem, 14vw, 5rem);
+        left: 0;
+      }
+    
+      /* ===== YEAR ALIGNMENT FIX ===== */
+      h1 .year {
+        left: 0;
+      }
+    
+      /* ===== CONSISTENT STROKE ===== */
+      h1,
+      h1 .outline,
+      h1 .big,
+      h1 .year {
+        -webkit-text-stroke: 1.5px #ff3b3b;
+      }
+    
+      /* ===== TOP LINE ===== */
+      h1::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    
+        width: 92%;
+        height: clamp(2px, 0.8vw, 5px);
+        border: clamp(1px, 0.3vw, 2px) solid #ff2a2a;
+    
+        top: -8px;
+      }
+    
+      /* ===== BOTTOM LINE ===== */
+      .big::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    
+        width: 92%;
+        height: clamp(2px, 0.8vw, 5px);
+        border: clamp(1px, 0.3vw, 2px) solid #ff2a2a;
+    
+        bottom: 8px;
+      }
+    
+    
+    }
 
     @media (max-width: 860px) {
       nav ul { display: none; }
