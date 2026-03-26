@@ -6,22 +6,54 @@
   <title>RESONANCE 2026 — Technical Fest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+  
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    const video = document.getElementById("heroVideo");
+    const btn = document.getElementById("soundToggle");
+
+    let soundEnabled = localStorage.getItem("soundEnabled") === "true";
+
+    if (soundEnabled) {
+      video.muted = false;
+      btn.innerText = "🔊";
+    }
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      video.muted = !video.muted;
+
+      soundEnabled = !video.muted;
+      localStorage.setItem("soundEnabled", soundEnabled);
+
+      btn.innerText = video.muted ? "🔇" : "🔊";
+    });
+
+  });
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #060810;
-      --surface: #0c0f1a;
-      --border: rgba(255,255,255,0.07);
-      --cyan: #00e5ff;
-      --cyan-dim: rgba(0,229,255,0.12);
-      --cyan-glow: rgba(0,229,255,0.35);
+      --bg: #0a0000;
+      --surface: #110000;
+      --border: rgba(180,20,20,0.25);
+      --cyan: #ff1a1a;
+      --cyan-dim: rgba(220,30,30,0.12);
+      --cyan-glow: rgba(220,30,30,0.5);
       --orange: #ff6b35;
-      --text: #e8eaf0;
-      --muted: rgba(232,234,240,0.45);
+      --text: #f0dada;
+      --muted: rgba(240,210,210,0.5);
       --display: 'Syne', sans-serif;
       --mono: 'IBM Plex Mono', monospace;
       --body: 'IBM Plex Sans', sans-serif;
+      --st-red: #cc0000;
+      --st-dark-red: #7a0000;
+      --st-glow: rgba(200,0,0,0.6);
     }
 
     html { scroll-behavior: smooth; }
@@ -35,12 +67,68 @@
       overflow-x: hidden;
     }
 
+    /* CRT scanline overlay */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 999;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
       pointer-events: none;
+      animation: scanMove 8s linear infinite;
     }
+
+    @font-face {
+      font-family: 'ITC Benguiat'; /* A unique name for your font */
+      src: url('ITCBenguiatStdBoldCn.woff2') format('woff2'),
+          url('ITCBenguiatStdBoldCn.woff') format('woff'),
+          url('ITCBenguiatStdBoldCn.otf') format('opentype'), /* Include the OTF as a fallback */
+          url('ITCBenguiatStdBoldCn.ttf') format('truetype');
+      font-weight: normal; /* Specify the weight of this specific file */
+      font-style: normal; /* Specify the style of this specific file */
+      font-display: swap; /* Controls font loading behavior for better performance */
+    }
+
+    @keyframes scanMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100px; }
+    }
+
+    /* Upside Down vine/tendril canvas */
+    #vine-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+
+    /* Floating particle spores */
+    .spore {
+      position: fixed;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: #ff3333;
+      pointer-events: none;
+      z-index: 2;
+      box-shadow: 0 0 6px #ff0000;
+      animation: floatSpore linear infinite;
+    }
+
+    @keyframes floatSpore {
+      0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) translateX(var(--drift)); opacity: 0; }
+    }
+
+    /* Electric flicker on the whole page */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      92% { opacity: 1; }
+      93% { opacity: 0.3; }
+      94% { opacity: 1; }
+      96% { opacity: 0.6; }
+      97% { opacity: 1; }
+    }
+
+    body { animation: flicker 7s ease-in-out infinite; }
 
     body::after {
       content: '';
@@ -61,102 +149,240 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .nav-logo { font-family: var(--display); font-weight: 800; font-size: 1.2rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cyan); }
-    .nav-logo span { color: var(--text); opacity: 0.4; font-weight: 400; font-size: 0.8rem; margin-left: 0.5rem; }
+    .nav-logo { font-family: 'ITC Benguiat'; font-weight: 400; font-size: 1.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--st-red); text-shadow: 0 0 18px var(--st-glow), 0 0 40px rgba(180,0,0,0.4); animation: textFlicker 5s ease-in-out infinite; }
+    .nav-logo span { color: var(--text); opacity: 0.4; font-weight: 400; font-size: 0.8rem; margin-left: 0.5rem; font-family: var(--mono); }
+
+    @keyframes textFlicker {
+      0%, 100% { text-shadow: 0 0 18px var(--st-glow), 0 0 40px rgba(180,0,0,0.4); }
+      85% { text-shadow: 0 0 18px var(--st-glow), 0 0 40px rgba(180,0,0,0.4); }
+      86% { text-shadow: none; }
+      87% { text-shadow: 0 0 18px var(--st-glow), 0 0 40px rgba(180,0,0,0.4); }
+      90% { text-shadow: 0 0 25px var(--st-glow), 0 0 60px rgba(200,0,0,0.6); }
+      91% { text-shadow: none; }
+      92% { text-shadow: 0 0 18px var(--st-glow), 0 0 40px rgba(180,0,0,0.4); }
+    }
+
 
     nav ul { list-style: none; display: flex; gap: 2rem; }
     nav a { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; color: var(--muted); transition: color 0.2s; }
-    nav a:hover { color: var(--cyan); }
+    nav a:hover { color: var(--st-red); }
 
-    .nav-register { padding: 0.55rem 1.4rem; border: 1px solid var(--cyan); color: var(--cyan); transition: background 0.2s, color 0.2s; }
-    .nav-register:hover { background: var(--cyan); color: var(--bg); }
+    .nav-register { padding: 0.55rem 1.4rem; border: 1px solid var(--st-red); color: var(--st-red); transition: background 0.2s, color 0.2s; }
+    .nav-register:hover { background: var(--st-red); color: #fff; }
 
     header {
-      min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-      padding: 8rem clamp(1.5rem, 6vw, 4rem) 5rem;
+      height: 100svh; /* better than 100vh for mobile */
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 15rem clamp(1.5rem, 6vw, 4rem) 3rem;
+      position: relative;
+    }
+
+    /* ── VIDEO BACKGROUND ── */
+    .hero-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
       overflow: hidden;
     }
 
-    .hero-glow {
-      position: absolute; top: 10%; left: 40%; width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 65%);
-      pointer-events: none; z-index: 0;
-      animation: pulse 6s ease-in-out infinite alternate;
+    .hero-video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Dark, desaturated, slightly red-shifted to match ST palette */
+      opacity: 0.42;
+      filter: saturate(0.55) brightness(0.5) contrast(1.2) sepia(0.25) hue-rotate(-8deg);
     }
 
-    @keyframes pulse { from { transform: scale(1); opacity: 0.6; } to { transform: scale(1.15); opacity: 1; } }
+    /* Cinematic gradient overlay — keeps left side readable for text */
+    .hero-video-wrap::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        linear-gradient(to right,  rgba(10,0,0,0.82) 0%,  rgba(10,0,0,0.45) 55%, rgba(10,0,0,0.1) 100%),
+        linear-gradient(to bottom, rgba(10,0,0,0.5)  0%,  transparent 25%,  transparent 65%, rgba(10,0,0,0.9) 100%);
+    }
+
+    /* Red vignette pulse — Upside Down atmosphere */
+    .hero-video-wrap::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: radial-gradient(ellipse at center, transparent 35%, rgba(90,0,0,0.55) 100%);
+      animation: vigPulse 5s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes vigPulse {
+      from { opacity: 0.55; }
+      to   { opacity: 1;    }
+    }
+
+    /* All direct header children sit above the video layers */
+    header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
+
+    .hero-glow {
+      position: absolute; top: 10%; left: 40%; width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(180,0,0,0.15) 0%, rgba(100,0,0,0.06) 50%, transparent 70%);
+      pointer-events: none; z-index: 0;
+      animation: pulse 4s ease-in-out infinite alternate;
+    }
+
+    /* Second glow from below - the Upside Down portal */
+    .hero-glow-2 {
+      position: absolute; bottom: -10%; right: -5%; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(140,0,0,0.2) 0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+      animation: pulse 6s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes pulse { from { transform: scale(1); opacity: 0.6; } to { transform: scale(1.2); opacity: 1; } }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 
-    .hero-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1.5rem; animation: fadeUp 0.7s ease both; }
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--st-red); margin-bottom: 1.5rem; animation: fadeUp 0.7s ease both; }
     .hero-eyebrow::before { content: '> '; opacity: 0.5; }
 
-    h1 { font-family: var(--display); font-weight: 800; font-size: clamp(3rem, 15vw, 13rem); line-height: 0.88; letter-spacing: -0.03em; text-transform: uppercase; animation: fadeUp 0.8s 0.1s ease both; }
-    h1 .outline { -webkit-text-stroke: 1px rgba(255,255,255,0.25); color: transparent; }
-    h1 .accent { color: var(--cyan); }
+    h1 {
+      font-family: 'ITC Benguiat';
+      align-self: center;
+      text-align: center;
+      font-weight: 600;
+      font-size: clamp(3rem, 14vw, 14rem);
+      line-height: 0.68;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+
+      color: transparent;                 /* Make text fill transparent */
+      -webkit-text-stroke: 3px #ff3b3b;  /* Stroke color */
+      
+      /* Neon glow 
+      text-shadow:
+        0 0 5px #ff2a2a,
+        0 0 15px #ff2a2a,
+        0 0 30px #ff2a2a; */
+    }
+
+    h1 .outline,
+    h1 .big,
+    h1 .year {
+      color: transparent;                 /* Transparent fill */
+      -webkit-text-stroke: 3px #ff3b3b;  /* Same stroke for consistency */
+      
+      /* Neon glow 
+      text-shadow:
+        0 0 5px #ff2a2a,
+        0 0 15px #ff2a2a,
+        0 0 30px #ff2a2a;*/
+      
+      vertical-align: top;
+      position: relative;
+    }
+
+    h1 .big {
+      font-size: clamp(7rem, 17vw, 17rem);
+      left: 0;
+    }
+
+    h1 .year {
+      left: -2%;
+    }
+
+    /* top & bottom rectangular lines without glow */
+    h1::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 7px;
+      border: 2px solid #ff2a2a;
+      background: transparent;
+      top: -15px;
+      box-shadow: none;
+    }
+
+    .big::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 7px;
+      border: 2px solid #ff2a2a;
+      background: transparent;
+      bottom: 25px;
+      box-shadow: none;
+    }
+
+    
 
     .hero-tagline { margin-top: 2rem; font-size: 1.05rem; color: var(--muted); max-width: 500px; font-weight: 300; animation: fadeUp 0.8s 0.2s ease both; }
 
     .hero-meta { display: flex; gap: 2.5rem; flex-wrap: wrap; margin-top: 3rem; animation: fadeUp 0.8s 0.3s ease both; }
     .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
-    .hero-meta-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan); opacity: 0.7; }
+    .hero-meta-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--st-red); opacity: 0.8; }
     .hero-meta-val { font-family: var(--display); font-weight: 600; font-size: 1rem; }
 
     .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; animation: fadeUp 0.8s 0.4s ease both; }
 
-    .btn-primary { padding: 0.9rem 2.5rem; background: var(--cyan); color: var(--bg); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; font-weight: 500; transition: opacity 0.2s, box-shadow 0.2s; }
-    .btn-primary:hover { opacity: 0.85; box-shadow: 0 0 30px var(--cyan-glow); }
+    .btn-primary { padding: 0.9rem 2.5rem; background: var(--st-red); color: #fff; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; font-weight: 500; transition: opacity 0.2s, box-shadow 0.2s; }
+    .btn-primary:hover { opacity: 0.85; box-shadow: 0 0 30px var(--st-glow); }
 
-    .btn-outline { padding: 0.9rem 2.5rem; border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
-    .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-outline { padding: 0.9rem 2.5rem; border: 1px solid rgba(180,0,0,0.35); color: var(--muted); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .btn-outline:hover { border-color: var(--st-red); color: var(--st-red); }
 
     section { padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 4rem); border-top: 1px solid var(--border); }
 
-    .sec-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1rem; opacity: 0.8; }
+    .sec-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--st-red); margin-bottom: 1rem; opacity: 0.9; text-shadow: 0 0 10px rgba(180,0,0,0.4); }
 
-    h2 { font-family: var(--display); font-weight: 700; font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.05; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 3rem; }
-    h2 em { font-style: normal; color: var(--cyan); }
+    h2 { font-family: 'ITC Benguiat'; font-weight: 400; font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.05; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 3rem; text-shadow: 0 0 20px rgba(150,0,0,0.3); }
+    h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st-glow); }
 
     .about-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
     .about-text p { color: var(--muted); font-weight: 300; margin-bottom: 1rem; font-size: 1.05rem; }
 
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
     .stat-box { background: var(--surface); padding: 2rem 1.8rem; transition: background 0.2s; }
-    .stat-box:hover { background: var(--cyan-dim); }
-    .stat-num { font-family: var(--display); font-size: 2.8rem; font-weight: 800; color: var(--cyan); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-box:hover { background: rgba(180,0,0,0.08); }
+    .stat-num { font-family: 'ITC Benguiat'; font-size: 2.8rem; font-weight: 400; color: var(--st-red); line-height: 1; margin-bottom: 0.3rem; text-shadow: 0 0 20px var(--st-glow); }
     .stat-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
 
     #competitions { background: var(--surface); }
 
     .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
 
-    .comp-card { background: var(--bg); padding: 2.5rem; cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; }
-    .comp-card:hover { background: rgba(0,229,255,0.04); }
+    .comp-card { background: var(--bg); padding: 2.5rem; cursor: pointer; transition: background 0.2s, box-shadow 0.3s; display: flex; flex-direction: column; }
+    .comp-card:hover { background: rgba(180,0,0,0.05); box-shadow: inset 0 0 30px rgba(180,0,0,0.08); }
 
     .comp-icon { font-size: 2rem; margin-bottom: 1.2rem; }
-    .comp-card h3 { font-family: var(--display); font-weight: 700; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 0.5rem; }
+    .comp-card h3 { font-family: 'ITC Benguiat'; font-weight: 400; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
     .comp-card p { font-size: 0.88rem; color: var(--muted); font-weight: 300; flex: 1; }
 
     .comp-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.2rem; }
-    .ctag { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.6rem; border: 1px solid var(--border); color: var(--muted); }
+    .ctag { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.6rem; border: 1px solid rgba(180,0,0,0.3); color: var(--muted); }
 
     .comp-meta { display: flex; gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
     .comp-meta-item { display: flex; flex-direction: column; gap: 0.15rem; }
-    .comp-meta-key { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cyan); opacity: 0.6; }
+    .comp-meta-key { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--st-red); opacity: 0.7; }
     .comp-meta-val { font-family: var(--mono); font-size: 0.8rem; color: var(--text); }
 
-    .btn-brochure { display: inline-block; margin-top: 1.5rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cyan); text-decoration: none; border: 1px solid rgba(0,229,255,0.3); padding: 0.5rem 1rem; transition: background 0.2s, border-color 0.2s; align-self: flex-start; cursor: pointer; background: none; }
-    .btn-brochure:hover { background: var(--cyan-dim); border-color: var(--cyan); }
+    .btn-brochure { display: inline-block; margin-top: 1.5rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--st-red); text-decoration: none; border: 1px solid rgba(180,0,0,0.4); padding: 0.5rem 1rem; transition: background 0.2s, border-color 0.2s, box-shadow 0.2s; align-self: flex-start; cursor: pointer; background: none; }
+    .btn-brochure:hover { background: rgba(180,0,0,0.1); border-color: var(--st-red); box-shadow: 0 0 15px rgba(180,0,0,0.3); }
     .btn-brochure::before { content: '↓ '; }
 
     /* BROCHURE OVERLAY */
-    .brochure-overlay { display: none; position: fixed; inset: 0; z-index: 800; background: rgba(6,8,16,0.97); overflow-y: auto; }
+    .brochure-overlay { display: none; position: fixed; inset: 0; z-index: 800; background: rgba(5,0,0,0.97); overflow-y: auto; }
     .brochure-overlay.open { display: block; }
 
     .brochure-inner { max-width: 860px; margin: 4rem auto; padding: 0 1.5rem 4rem; }
 
     .brochure-close { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--border); padding: 0.5rem 1.2rem; cursor: pointer; margin-bottom: 3rem; transition: color 0.2s, border-color 0.2s; }
-    .brochure-close:hover { color: var(--cyan); border-color: var(--cyan); }
+    .brochure-close:hover { color: var(--st-red); border-color: var(--st-red); }
 
     .brochure-hero { border: 1px solid var(--border); padding: 3.5rem; margin-bottom: 2rem; background: var(--surface); }
     .brochure-hero .big-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
@@ -164,7 +390,7 @@
     .brochure-hero p { color: var(--muted); font-size: 1.05rem; max-width: 560px; }
 
     .brochure-section { border: 1px solid var(--border); padding: 2.5rem; margin-bottom: 1px; background: var(--surface); }
-    .brochure-section h3 { font-family: var(--display); font-weight: 700; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cyan); margin-bottom: 1.2rem; }
+    .brochure-section h3 { font-family: 'ITC Benguiat'; font-weight: 400; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--st-red); margin-bottom: 1.2rem; text-shadow: 0 0 10px rgba(180,0,0,0.3); }
     .brochure-section p, .brochure-section li { color: var(--muted); font-size: 0.95rem; font-weight: 300; }
     .brochure-section ul { padding-left: 1.2rem; }
     .brochure-section li { margin-bottom: 0.4rem; }
@@ -174,69 +400,69 @@
     .prize-row { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
     .prize-row:last-child { border-bottom: none; }
     .prize-place { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-    .prize-amount { font-family: var(--display); font-weight: 700; color: var(--cyan); font-size: 1.3rem; }
+    .prize-amount { font-family: 'ITC Benguiat'; font-weight: 400; color: var(--st-red); font-size: 1.5rem; text-shadow: 0 0 10px var(--st-glow); }
 
     .timeline-item { display: flex; gap: 1.5rem; padding: 0.8rem 0; border-bottom: 1px solid var(--border); align-items: baseline; }
     .timeline-item:last-child { border-bottom: none; }
-    .timeline-date { font-family: var(--mono); font-size: 0.7rem; color: var(--cyan); opacity: 0.7; min-width: 90px; }
+    .timeline-date { font-family: var(--mono); font-size: 0.7rem; color: var(--st-red); opacity: 0.8; min-width: 90px; }
     .timeline-text { font-size: 0.92rem; color: var(--muted); }
 
-    .btn-register-comp { display: inline-block; margin-top: 2rem; padding: 1rem 2.5rem; background: var(--cyan); color: var(--bg); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.2s; }
-    .btn-register-comp:hover { opacity: 0.85; }
+    .btn-register-comp { display: inline-block; margin-top: 2rem; padding: 1rem 2.5rem; background: var(--st-red); color: #fff; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.2s, box-shadow 0.2s; }
+    .btn-register-comp:hover { opacity: 0.85; box-shadow: 0 0 30px var(--st-glow); }
 
     /* SCHEDULE */
     .schedule-tabs { display: flex; border: 1px solid var(--border); margin-bottom: 2px; overflow-x: auto; }
     .tab { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.9rem 1.8rem; background: none; border: none; border-right: 1px solid var(--border); color: var(--muted); cursor: pointer; white-space: nowrap; transition: background 0.15s, color 0.15s; }
     .tab:last-child { border-right: none; }
-    .tab.active { background: var(--cyan-dim); color: var(--cyan); }
+    .tab.active { background: rgba(180,0,0,0.1); color: var(--st-red); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
     .sched-item { display: grid; grid-template-columns: 120px 1fr auto; gap: 2rem; padding: 1.2rem 1.5rem; border: 1px solid var(--border); border-top: none; align-items: center; transition: background 0.15s; }
-    .sched-item:hover { background: rgba(0,229,255,0.03); }
+    .sched-item:hover { background: rgba(180,0,0,0.04); }
     .sched-time { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
     .sched-title { font-family: var(--display); font-weight: 600; font-size: 1rem; }
     .sched-loc { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); text-align: right; }
     .sched-badge { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.5rem; border: 1px solid; display: inline-block; margin-top: 0.3rem; }
-    .badge-comp { border-color: var(--orange); color: var(--orange); }
-    .badge-talk { border-color: var(--cyan); color: var(--cyan); }
-    .badge-social { border-color: #9b59b6; color: #9b59b6; }
-    .badge-workshop { border-color: #2ecc71; color: #2ecc71; }
+    .badge-comp { border-color: var(--st-red); color: var(--st-red); }
+    .badge-talk { border-color: #cc6600; color: #cc6600; }
+    .badge-social { border-color: #8b3a8b; color: #8b3a8b; }
+    .badge-workshop { border-color: #1a8040; color: #1a8040; }
 
     /* REGISTER */
     #register { background: var(--surface); }
     .reg-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
-    .reg-info h3 { font-family: var(--display); font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem; color: var(--cyan); }
+    .reg-info h3 { font-family: 'ITC Benguiat'; font-weight: 400; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem; color: var(--st-red); text-shadow: 0 0 10px rgba(180,0,0,0.3); }
     .reg-info p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
     .reg-info ul { padding-left: 1rem; }
     .reg-info li { color: var(--muted); font-size: 0.88rem; margin-bottom: 0.4rem; }
 
     .form-group { margin-bottom: 1.4rem; }
-    label { display: block; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan); opacity: 0.7; margin-bottom: 0.5rem; }
-    input, select, textarea { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 0.75rem 1rem; color: var(--text); font-family: var(--mono); font-size: 0.85rem; outline: none; transition: border-color 0.2s, background 0.2s; }
-    input:focus, select:focus, textarea:focus { border-color: var(--cyan); background: var(--cyan-dim); }
+    label { display: block; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--st-red); opacity: 0.8; margin-bottom: 0.5rem; }
+    input, select, textarea { width: 100%; background: rgba(80,0,0,0.08); border: 1px solid rgba(180,0,0,0.2); padding: 0.75rem 1rem; color: var(--text); font-family: var(--mono); font-size: 0.85rem; outline: none; transition: border-color 0.2s, background 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--st-red); background: rgba(180,0,0,0.08); box-shadow: 0 0 15px rgba(180,0,0,0.15); }
     input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.5; }
-    select option { background: var(--bg); }
+    select option { background: #110000; }
     textarea { resize: vertical; min-height: 80px; }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
 
     .checkbox-group { display: flex; flex-direction: column; gap: 0.6rem; }
     .checkbox-item { display: flex; align-items: center; gap: 0.7rem; cursor: pointer; }
-    .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--cyan); }
+    .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--st-red); }
     .checkbox-item span { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
 
-    .btn-submit { width: 100%; padding: 1rem; background: var(--cyan); color: var(--bg); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; border: none; cursor: pointer; margin-top: 0.5rem; transition: opacity 0.2s, box-shadow 0.2s; }
-    .btn-submit:hover { opacity: 0.85; box-shadow: 0 0 24px var(--cyan-glow); }
+    .btn-submit { width: 100%; padding: 1rem; background: var(--st-red); color: #fff; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; border: none; cursor: pointer; margin-top: 0.5rem; transition: opacity 0.2s, box-shadow 0.2s; }
+    .btn-submit:hover { opacity: 0.85; box-shadow: 0 0 24px var(--st-glow); }
 
-    .reg-success { display: none; text-align: center; padding: 3rem 2rem; border: 1px solid rgba(0,229,255,0.2); }
+    .reg-success { display: none; text-align: center; padding: 3rem 2rem; border: 1px solid rgba(180,0,0,0.3); }
     .reg-success .icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .reg-success h3 { font-family: var(--display); font-size: 1.8rem; font-weight: 700; text-transform: uppercase; color: var(--cyan); }
+    .reg-success h3 { font-family: 'ITC Benguiat'; font-size: 1.8rem; font-weight: 400; text-transform: uppercase; color: var(--st-red); text-shadow: 0 0 20px var(--st-glow); }
     .reg-success p { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; margin-top: 0.5rem; }
 
     footer { padding: 2.5rem clamp(1.5rem, 6vw, 4rem); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     footer p { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); }
-    footer a { color: var(--cyan); text-decoration: none; }
+    footer a { color: var(--st-red); text-decoration: none; }
 
     .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -249,9 +475,32 @@
       .sched-loc { display: none; }
       .form-row { grid-template-columns: 1fr; }
     }
+
+    .sound-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 80%;
+      z-index: 1000;
+
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,0,0,0.4);
+      color: #fff;
+      font-size: 1.2rem;
+
+      padding: 0.6rem 0.9rem;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+    }
+
+    .sound-btn:hover {
+      border-color: #ff0000;
+      box-shadow: 0 0 10px rgba(255,0,0,0.5);
+    }
   </style>
 </head>
 <body>
+
+<canvas id="vine-canvas"></canvas>
 
 <nav>
   <div class="nav-logo">Resonance<span>'26</span></div>
@@ -261,13 +510,22 @@
     <li><a href="#schedule">Schedule</a></li>
     <li><a href="#register">Register</a></li>
   </ul>
+  <button id="soundToggle" class="sound-btn">🔇</button>
   <a href="#register" class="nav-register">Register Now</a>
 </nav>
 
 <header>
+  <!-- Full-bleed video background -->
+  <div class="hero-video-wrap">
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+      <source src="src/Stranger Things _ Title Sequence [HD] _ Netflix.mp4" type="video/mp4">
+    </video>
+  </div>
+
   <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
   <p class="hero-eyebrow">Annual Technical Festival — 2026</p>
-  <h1><span class="outline">Res</span><span class="accent">on</span><br><span class="outline">ance</span></h1>
+  <h1><span class="big">res</span><span class="outline">ona</span><span class="big">nce</span><br><span class="year">2026</span></h1>
   <p class="hero-tagline">Where engineering meets innovation. Three days of competitions, talks, and breakthroughs.</p>
   <div class="hero-meta">
     <div class="hero-meta-item"><span class="hero-meta-label">Date</span><span class="hero-meta-val">Apr 20–22, 2026</span></div>
@@ -436,12 +694,12 @@
         <li>Pre-registration required for all competitions</li>
       </ul>
       <h3 style="margin-top:2rem;">Important Dates</h3>
-      <p>Registrations close: <strong style="color:var(--cyan)">September 30, 2026</strong></p>
+      <p>Registrations close: <strong style="color:var(--st-red)">September 30, 2026</strong></p>
       <p>Late registrations subject to availability.</p>
       <h3 style="margin-top:2rem;">Registration Fee</h3>
       <p>&#8377;200 per event (single event)<br>&#8377;500 for all-access pass (all 6 events)</p>
       <h3 style="margin-top:2rem;">Contact</h3>
-      <p><a href="mailto:resonance@college.edu" style="color:var(--cyan)">resonance@gmail.com</a></p>
+      <p><a href="/cdn-cgi/l/email-protection#017364726e6f606f626441626e6d6d6466642f646574" style="color:var(--st-red)"><span class="__cf_email__" data-cfemail="7d0f180e12131c131e183d1a101c1411531e1210">[email&#160;protected]</span></a></p>
     </div>
 
     <div>
@@ -498,7 +756,7 @@
 
 <footer>
   <p>&#169; 2025 Resonance — GEC Goa All rights reserved.</p>
-  <p>Questions? <a href="mailto:resonance@college.edu">resonance@gmail.com</a></p>
+  <p>Questions? <a href="/cdn-cgi/l/email-protection#80f2e5f3efeee1eee3e5c0e3efecece5e7e5aee5e4f5"><span class="__cf_email__" data-cfemail="6e1c0b1d01000f000d0b2e09030f0702400d0103">[email&#160;protected]</span></a></p>
 </footer>
 
 <!-- BROCHURE: HACKATHON -->
@@ -688,7 +946,7 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
@@ -739,12 +997,335 @@
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fname, lname, email, phone, college, year, pass, competitions, team })
-    }).catch(err => console.error('Submission error:', err)).finally(() => {
+      body: JSON.stringify({ fname, lname, email, phone, college, year, pass: pass, team, competitions })
+    }).then(() => {
       document.getElementById('reg-form').style.display = 'none';
       document.getElementById('reg-success').style.display = 'block';
+    }).catch(() => {
+      btn.textContent = 'Submit Registration →';
+      btn.disabled = false;
+      alert('Something went wrong. Please try again.');
     });
   }
+</script>
+
+<script>
+// ============================================================
+// STRANGER THINGS ANIMATIONS
+// ============================================================
+
+// 1. VINE / TENDRIL CANVAS — Upside Down creeping vines
+(function() {
+  const canvas = document.getElementById('vine-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Each vine is a branching tendril
+  class Vine {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * window.innerWidth;
+      this.y = Math.random() < 0.5 ? 0 : window.innerHeight;
+      this.angle = this.y === 0 ? (Math.PI * 0.3 + Math.random() * Math.PI * 0.4)
+                                : (-Math.PI * 0.3 - Math.random() * Math.PI * 0.4);
+      this.length = 0;
+      this.maxLength = 120 + Math.random() * 200;
+      this.speed = 0.6 + Math.random() * 1.2;
+      this.thickness = 0.5 + Math.random() * 1.5;
+      this.alpha = 0.3 + Math.random() * 0.5;
+      this.points = [{x: this.x, y: this.y}];
+      this.wobble = 0;
+      this.wobbleSpeed = 0.03 + Math.random() * 0.04;
+      this.branches = [];
+      this.branchAt = 30 + Math.random() * 60;
+      this.branched = false;
+      this.dead = false;
+    }
+    update() {
+      if (this.dead) return;
+      this.wobble += this.wobbleSpeed;
+      this.angle += Math.sin(this.wobble) * 0.04;
+      const last = this.points[this.points.length - 1];
+      const nx = last.x + Math.cos(this.angle) * this.speed;
+      const ny = last.y + Math.sin(this.angle) * this.speed;
+      this.points.push({x: nx, y: ny});
+      this.length += this.speed;
+
+      if (!this.branched && this.length > this.branchAt) {
+        this.branched = true;
+        const b = new Vine();
+        b.x = nx; b.y = ny;
+        b.points = [{x: nx, y: ny}];
+        b.angle = this.angle + (Math.random() < 0.5 ? 0.5 : -0.5) + (Math.random() - 0.5) * 0.4;
+        b.maxLength = this.maxLength * 0.55;
+        b.thickness = this.thickness * 0.6;
+        b.alpha = this.alpha * 0.7;
+        this.branches.push(b);
+      }
+      this.branches.forEach(b => b.update());
+
+      if (this.length >= this.maxLength) this.dead = true;
+    }
+    draw(ctx) {
+      if (this.points.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(this.points[0].x, this.points[0].y);
+      for (let i = 1; i < this.points.length; i++) {
+        ctx.lineTo(this.points[i].x, this.points[i].y);
+      }
+      ctx.strokeStyle = `rgba(160,0,0,${this.alpha})`;
+      ctx.lineWidth = this.thickness;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Small nodes along the vine
+      if (this.points.length % 15 === 0) {
+        const p = this.points[this.points.length - 1];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, this.thickness * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,0,0,${this.alpha * 0.7})`;
+        ctx.fill();
+      }
+
+      this.branches.forEach(b => b.draw(ctx));
+    }
+  }
+
+  const vines = [];
+  for (let i = 0; i < 12; i++) {
+    const v = new Vine();
+    v.length = Math.random() * v.maxLength * 0.5; // stagger start
+    vines.push(v);
+  }
+
+  let frame = 0;
+  function animVines() {
+    frame++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Replace dead vines
+    for (let i = 0; i < vines.length; i++) {
+      if (vines[i].dead && Math.random() < 0.02) {
+        vines[i] = new Vine();
+      }
+      vines[i].update();
+      vines[i].draw(ctx);
+    }
+    requestAnimationFrame(animVines);
+  }
+  animVines();
+})();
+
+// 2. FLOATING SPORES — Upside Down particles
+(function() {
+  const count = 30;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'spore';
+    const size = 1.5 + Math.random() * 3;
+    el.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      width: ${size}px;
+      height: ${size}px;
+      --drift: ${(Math.random() - 0.5) * 120}px;
+      animation-duration: ${5 + Math.random() * 12}s;
+      animation-delay: ${-Math.random() * 15}s;
+      opacity: ${0.4 + Math.random() * 0.5};
+      background: hsl(${350 + Math.random() * 20}, 100%, ${40 + Math.random() * 20}%);
+      box-shadow: 0 0 ${4 + Math.random() * 6}px rgba(220,0,0,0.8);
+    `;
+    document.body.appendChild(el);
+  }
+})();
+
+// 3. FLICKERING CHRISTMAS LIGHTS BANNER (hero section decoration)
+(function() {
+  const header = document.querySelector('header');
+  const bar = document.createElement('div');
+  bar.style.cssText = `
+    position:absolute; top:0; left:0; right:0; height:4px; z-index:10;
+    display:flex; gap:0;
+    overflow:hidden;
+  `;
+  const colors = ['#ff0000','#ff6600','#ffff00','#00ff00','#0066ff','#ff00ff','#ff3333','#ff9900'];
+  const numLights = 60;
+  for (let i = 0; i < numLights; i++) {
+    const bulb = document.createElement('span');
+    const color = colors[i % colors.length];
+    const delay = Math.random() * 3;
+    const dur = 0.08 + Math.random() * 0.15;
+    bulb.style.cssText = `
+      display:inline-block;
+      flex:1; height:8px;
+      background:${color};
+      box-shadow: 0 0 6px ${color}, 0 0 12px ${color};
+      border-radius:50% 50% 40% 40%;
+      animation: bulbFlicker ${dur}s ${delay}s ease-in-out infinite alternate;
+      opacity:1;
+      margin:0 1px;
+    `;
+    bar.appendChild(bulb);
+  }
+
+  // Add keyframes for bulb flicker
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes bulbFlicker {
+      0% { opacity:1; }
+      40% { opacity:1; }
+      50% { opacity:0.1; }
+      60% { opacity:0.9; }
+      80% { opacity:0.05; }
+      100% { opacity:1; }
+    }
+    @keyframes bulbOn {
+      0%,100% { opacity:1; }
+      50% { opacity:0.3; }
+    }
+    /* Upside Down fog at the bottom of hero */
+    header::after {
+      content:'';
+      position:absolute;
+      bottom:0; left:0; right:0; height:120px;
+      background: linear-gradient(to top, rgba(80,0,0,0.25) 0%, transparent 100%);
+      pointer-events:none;
+      z-index:0;
+    }
+    /* Nav red glow line */
+    nav::after {
+      content:'';
+      position:absolute;
+      bottom:0; left:0; right:0; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(200,0,0,0.8), rgba(200,0,0,0.4), transparent);
+      animation: navGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes navGlow {
+      0% { opacity:0.4; }
+      100% { opacity:1; box-shadow: 0 0 20px rgba(200,0,0,0.5); }
+    }
+    /* Section border glow */
+    section { box-shadow: inset 0 1px 0 rgba(150,0,0,0.2); }
+    /* Red tint on images / surface areas */
+    #competitions { background: linear-gradient(180deg, #0a0000 0%, #0f0000 100%); }
+    #register { background: linear-gradient(180deg, #0d0000 0%, #0a0000 100%); }
+    /* Glowing section borders */
+    section { border-top: 1px solid rgba(120,0,0,0.3); }
+    /* Hero title extra drip shadow */
+    h1 { filter: drop-shadow(0 4px 12px rgba(180,0,0,0.4)); }
+    /* Pulse on stat numbers */
+    .stat-num { animation: statPulse 3s ease-in-out infinite; }
+    @keyframes statPulse {
+      0%,100% { text-shadow: 0 0 20px rgba(200,0,0,0.6); }
+      50% { text-shadow: 0 0 35px rgba(220,0,0,0.9), 0 0 60px rgba(180,0,0,0.4); }
+    }
+    /* Vine-like border on comp cards */
+    .comp-card { border-left: 2px solid rgba(100,0,0,0); transition: border-left-color 0.3s; }
+    .comp-card:hover { border-left-color: rgba(200,0,0,0.7); }
+    /* Typewriter cursor blink on eyebrow */
+    .hero-eyebrow::after { content:'_'; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+  `;
+  document.head.appendChild(style);
+  header.appendChild(bar);
+})();
+
+// 5. VIDEO PARALLAX — subtle downward parallax on scroll
+(function() {
+  const video = document.querySelector('.hero-video-wrap video');
+  if (!video) return;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        const maxShift = 120;
+        const shift = Math.min(scrolled * 0.35, maxShift);
+        video.style.transform = `translateY(${shift}px) scale(1.08)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+  // Initial scale so parallax doesn't show edges
+  video.style.transform = 'translateY(0px) scale(1.08)';
+})();
+
+// 6. SCROLL INDICATOR — bouncing arrow at the bottom of hero
+(function() {
+  const header = document.querySelector('header');
+  const ind = document.createElement('div');
+  ind.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`;
+  ind.style.cssText = `
+    position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+    color:rgba(200,0,0,0.7); z-index:10;
+    animation: scrollBounce 1.8s ease-in-out infinite;
+    cursor:pointer;
+    filter: drop-shadow(0 0 8px rgba(200,0,0,0.6));
+  `;
+  ind.addEventListener('click', () => document.getElementById('about').scrollIntoView({behavior:'smooth'}));
+  const style = document.createElement('style');
+  style.textContent = `@keyframes scrollBounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(10px);} }`;
+  document.head.appendChild(style);
+  header.appendChild(ind);
+
+  // Fade out scroll indicator on scroll
+  window.addEventListener('scroll', () => {
+    ind.style.opacity = Math.max(0, 1 - window.scrollY / 200);
+  });
+})();
+(function() {
+  const section = document.querySelector('#about');
+  if (!section) return;
+  const wall = document.createElement('div');
+  wall.style.cssText = `
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    pointer-events:none; z-index:0; overflow:hidden;
+  `;
+
+  const letters = 'RUNAWAYJUSTRUN'.split('');
+  const cols = ['#ff0000','#ff6600','#ffff00','#00cc00','#0066ff','#cc00cc'];
+  letters.forEach((letter, i) => {
+    const bulb = document.createElement('div');
+    const col = cols[i % cols.length];
+    const delay = Math.random() * 8;
+    const dur = 0.6 + Math.random() * 2;
+    bulb.innerHTML = letter;
+    bulb.style.cssText = `
+      position:absolute;
+      right:${3 + i * 6.5}%;
+      top:${15 + Math.sin(i * 0.8) * 20}%;
+      font-family:'IBM Plex Mono',monospace;
+      font-size:0.55rem;
+      font-weight:700;
+      letter-spacing:0.1em;
+      color:${col};
+      text-shadow: 0 0 8px ${col}, 0 0 20px ${col};
+      animation: wallLight ${dur}s ${delay}s ease-in-out infinite alternate;
+      opacity:0.15;
+    `;
+    wall.appendChild(bulb);
+  });
+
+  const style2 = document.createElement('style');
+  style2.textContent = `
+    @keyframes wallLight {
+      0% { opacity:0.05; text-shadow:none; }
+      60% { opacity:0.05; text-shadow:none; }
+      70% { opacity:0.9; text-shadow:0 0 12px currentColor, 0 0 30px currentColor; }
+      80% { opacity:0.1; }
+      90% { opacity:0.8; text-shadow:0 0 12px currentColor; }
+      100% { opacity:0.9; text-shadow:0 0 12px currentColor, 0 0 30px currentColor; }
+    }
+  `;
+  document.head.appendChild(style2);
+  section.appendChild(wall);
+})();
 </script>
 </body>
 </html>
