@@ -9,50 +9,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
   
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-
+    document.addEventListener("DOMContentLoaded", () => {
     const video = document.getElementById("heroVideo");
     const btn = document.getElementById("soundToggle");
+    const gate = document.getElementById("entrance-gate");
+    const enterBtn = document.getElementById("enter-btn");
 
-    let soundEnabled = localStorage.getItem("soundEnabled") === "true";
+    // 1. Initial State: Force Muted & Autoplay for Mobile Compatibility
+    video.muted = true;
+    video.play().catch(err => console.log("Autoplay waiting for interaction"));
 
-    if (soundEnabled) {
-      video.muted = false;
-      btn.innerText = "🔊";
+    // 2. Entrance Gate Logic (The "Big Click")
+    if (enterBtn) {
+        enterBtn.addEventListener('click', () => {
+            // Unmute the video
+            video.muted = false;
+            video.play();
+            
+            // Update Mute Button UI
+            btn.innerText = "🔊";
+            localStorage.setItem("soundEnabled", "true");
+
+            // Hide the gate with a fade (optional)
+            gate.style.opacity = '0';
+            setTimeout(() => { gate.style.display = 'none'; }, 500);
+        });
     }
 
+    // 3. Independent Mute Toggle Logic
     btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      video.muted = !video.muted;
-
-      soundEnabled = !video.muted;
-      localStorage.setItem("soundEnabled", soundEnabled);
-
-      btn.innerText = video.muted ? "🔇" : "🔊";
+        e.stopPropagation();
+        video.muted = !video.muted;
+        btn.innerText = video.muted ? "🔇" : "🔊";
+        localStorage.setItem("soundEnabled", !video.muted);
     });
 
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const video = document.getElementById("heroVideo");
-
-    // 1. Force muted state (Required for mobile autoplay)
-    video.muted = true;
-    video.defaultMuted = true;
-
-    // 2. Explicitly call play()
-    const playVideo = () => {
-        video.play().catch(err => {
-            console.log("Autoplay prevented. Waiting for user interaction.");
-        });
-    };
-
-    playVideo();
-
-    // 3. Fallback: Start video on first touch if browser blocked it
+    // 4. Mobile "Wake Up" Fallback
     document.body.addEventListener('touchstart', () => {
-        if (video.paused) playVideo();
+        if (video.paused) video.play();
     }, { once: true });
 });
   </script>
@@ -581,10 +575,35 @@
     .hero-eyebrow {
       margin-bottom: 0 !important;
     }
+
+    #entrance-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #enter-btn {
+      padding: 1.5rem 3rem;
+      background: transparent;
+      color: var(--st-red);
+      border: 2px solid var(--st-red);
+      font-family: 'ITC Benguiat';
+      font-size: 1.5rem;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--st-glow);
+    }
     
   </style>
 </head>
 <body>
+<div id="entrance-gate">
+  <button id="enter-btn">ENTER RESONANCE</button>
+</div>
 
 <canvas id="vine-canvas"></canvas>
 
