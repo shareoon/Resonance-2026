@@ -430,17 +430,30 @@ function openRegistration() {
     const regVideo = document.getElementById('regVideo');
     
     if (regScreen) {
-        // 1. Make it visible FIRST
-        regScreen.style.display = 'block'; 
+        regScreen.style.display = 'block';
         regScreen.classList.add('open');
         document.body.style.overflow = 'hidden';
+        regScreen.scrollTop = 0;
+    }
+
+    if (regVideo) {
+        // Mobile browsers require the video to be muted to play via script
+        regVideo.muted = true; 
+        regVideo.currentTime = 0;
         
-        // 2. Then trigger the video
-        if (regVideo) {
-            regVideo.currentTime = 0;
-            // Catching the promise is best practice for modern browsers
-            regVideo.play().catch(err => {
-                console.error("Video playback failed:", err);
+        // This promise handles the 'Play' request and catches errors if blocked
+        let playPromise = regVideo.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Mobile Autoplay blocked. Waiting for touch.");
+                
+                // FALLBACK: If blocked, play on the very next touch anywhere on the screen
+                const playOnTouch = () => {
+                    regVideo.play();
+                    document.removeEventListener('touchstart', playOnTouch);
+                };
+                document.addEventListener('touchstart', playOnTouch);
             });
         }
     }
