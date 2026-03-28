@@ -465,15 +465,6 @@ textarea { resize: vertical; min-height: 80px; }
   to   { opacity: 1; transform: scale(1); }
 }
 
-#registration-screen.close {
-  animation: portalFadeout 0.6s ease backwards;
-}
-
-@keyframes portalFadeout {
-  from { opacity: 1; transform: scale(1); }
-  to   { opacity: 0; transform: scale(0.97) translateY(10px); }
-}
-
 /* ── BG IMAGE — the forest floor, sits below everything ── */
 .reg-bg-image {
   position: fixed; inset: 0;
