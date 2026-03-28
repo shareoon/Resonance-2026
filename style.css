@@ -750,7 +750,7 @@
   #registration-screen h2 {
     font-size: clamp(1.6rem, 8vw, 2.4rem);
     text-align: left;
-    filter: brightness(1.5);
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
   }
 
   /*  INPUTS */
@@ -759,8 +759,9 @@
   #registration-screen textarea {
     font-size: 0.9rem;
     padding: 0.65rem 0.8rem;
-    filter: brightness(1.5);
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
   }
+
 
   /*  CLOSE BUTTON */
   .reg-close {
