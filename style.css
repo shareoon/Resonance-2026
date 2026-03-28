@@ -727,7 +727,7 @@
 
   /* BACKGROUND IMAGE */
   .reg-bg-image {
-    transform: scale(2);
+    transform: scale(3);
     object-position: 50% 70%; /* better framing for vertical screens */
     opacity: 0.5;
     filter: brightness(0.5); /* remove hue-rotate for cleaner look */
