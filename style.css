@@ -620,7 +620,7 @@
     will-change: transform;
     opacity: 0.6; /* Adjust so it's dark and moody */
     filter: saturate(0.4) brightness(0.5) hue-rotate(-10deg);
-    z-index: 100;
+    z-index: 95;
 }
 
 .reg-video-wrap video {
