@@ -335,7 +335,7 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
 .btn-brochure::before { content: '↓ '; }
 
 /* ── BROCHURE OVERLAY ── */
-.brochure-overlay { display: none; position: fixed; inset: 0; z-index: 800; background: rgba(5,0,0,0.97); overflow-y: auto; }
+.brochure-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(5,0,0,0.97); overflow-y: auto; }
 .brochure-overlay.open { display: block; }
 
 .brochure-inner { max-width: 860px; margin: 4rem auto; padding: 0 1.5rem 4rem; }
