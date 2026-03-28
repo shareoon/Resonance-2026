@@ -594,7 +594,7 @@
     /* 4. PERFORMANCE: Since you're using filters, this keeps it smooth */
     will-change: transform;
     inset: 0;
-    z-index: 150; /* Higher than the form content to overlay particles */
+    z-index: 500; /* Higher than the form content to overlay particles */
     pointer-events: none; /* Essential: allows you to click the form underneath */
     mix-blend-mode: screen; /* Knocks out the black, keeps the glow */
     object-fit: cover;
@@ -603,7 +603,7 @@
 }
 
 .reg-bg-image {
-    position: absolute;
+    position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
@@ -611,7 +611,7 @@
     transform: scale(1); 
     
     /* 2. THE FOCUS: Adjust these % to center the best particles */
-    object-position: 50% 50%; 
+    object-position: 50% 90%; 
     
     /* 3. THE FIT: Keeps the video from stretching weirdly */
     object-fit: cover; 
@@ -627,8 +627,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.8; /* Increased for punchier visuals */
-    filter: contrast(1.2) brightness(1.1); /* Makes particles pop */
+    opacity: 1; /* Increased for punchier visuals */
+    filter: contrast(1.5) brightness(1.3); /* Makes particles pop */
 }
 
 #registration-screen #register {
