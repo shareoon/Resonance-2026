@@ -475,3 +475,14 @@ document.addEventListener('keydown', e => {
         closeBrochure();
     }
 });
+
+document.querySelector('.nav-logo').addEventListener('click', () => {
+  // Close any open overlays first
+  closeRegistration();
+  closeBrochure();
+  // Skip the gate entirely
+  const gate = document.getElementById('entrance-gate');
+  if (gate) { gate.style.display = 'none'; }
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
