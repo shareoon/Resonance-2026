@@ -53,6 +53,7 @@ document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('
 
 function openBrochure(id) {
 const el = document.getElementById('brochure-' + id);
+history.pushState({ overlay: 'registration' }, '', '');
 if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; el.scrollTop = 0; }
 }
 
@@ -434,6 +435,7 @@ function openRegistration() {
         regScreen.style.display = 'block'; 
         regScreen.classList.add('open');
         document.body.style.overflow = 'hidden';
+        history.pushState({ overlay: 'brochure', id }, '', '');
         
         // 2. Then trigger the video
         if (regVideo) {
@@ -445,6 +447,19 @@ function openRegistration() {
         }
     }
 }
+
+// Intercept back button / desktop backspace
+window.addEventListener('popstate', (e) => {
+  // If an overlay is open, close it instead of navigating away
+  const openBrochureEl = document.querySelector('.brochure-overlay.open:not(#registration-screen)');
+  const regScreen = document.getElementById('registration-screen');
+
+  if (openBrochureEl) {
+    closeBrochure();
+  } else if (regScreen && regScreen.classList.contains('open')) {
+    closeRegistration();
+  }
+});
 
 function closeRegistration() {
     const regScreen = document.getElementById('registration-screen');
