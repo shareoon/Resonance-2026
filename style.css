@@ -284,7 +284,7 @@ h1::before {
 .hero-meta-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--st-red); opacity: 0.8; }
 .hero-meta-val   { font-family: var(--display); font-weight: 600; font-size: 1rem; }
 
-.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; animation: fadeUp 0.8s 0.4s ease both; }
+hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; position: fixed; top: -8.5%; margin-top: 3rem; animation: fadeUp 0.8s 0.4s ease both; }
 
 .btn-primary { padding: 0.9rem 2.5rem; background: var(--st-red); color: #fff; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; font-weight: 500; transition: opacity 0.2s, box-shadow 0.2s; }
 .btn-primary:hover { opacity: 0.85; box-shadow: 0 0 30px var(--st-glow); }
@@ -698,6 +698,10 @@ footer a { color: var(--st-red); text-decoration: none; }
   align-items: stretch;
   width: 100%;
   max-width: 320px;
+  }
+
+  header {
+   height: 120dvh; min-height: 120dvh;
   }
 
   .btn-primary,
