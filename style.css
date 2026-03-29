@@ -693,4 +693,18 @@ footer a { color: var(--st-red); text-decoration: none; }
   .reg-layout { grid-template-columns: 1fr; gap: 2rem; }
   .form-row { grid-template-columns: 1fr; }
   .reg-video-wrap video { filter: brightness(2) contrast(1.4) saturate(0.5) hue-rotate(160deg); }
+  .hero-cta {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 320px;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    text-align: center;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    display: block;
+  }
 }
