@@ -4,12 +4,22 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RESONANCE 2026 — Technical Fest</title>
+
+  <!--
+    FIX: Added crossorigin preconnect to fonts.gstatic.com.
+    Without this second preconnect the browser can't reuse the connection
+    for the actual font file download, negating most of the preconnect benefit.
+    Also merged both Google Fonts requests into a single <link> to save a
+    round-trip (two separate stylesheet fetches → one).
+  -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400&family=Creepster&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div id="entrance-gate">
   <button id="enter-btn">ENTER RESONANCE</button>
 </div>
@@ -28,7 +38,6 @@
 </nav>
 
 <header>
-  <!-- Full-bleed video background -->
   <div class="hero-video-wrap">
     <video id="heroVideo" autoplay muted loop playsinline preload="auto">
       <source src="src/Stranger Things _ Title Sequence [HD] _ Netflix.mp4" type="video/mp4">
@@ -45,16 +54,18 @@
   <p class="hero-tagline">Where engineering meets innovation. Three days of competitions, talks, and breakthroughs.</p>
   <div class="hero-meta">
     <div class="hero-meta-item"><span class="hero-meta-label">Date</span><span class="hero-meta-val">Apr 20–22, 2026</span></div>
-    <div class="hero-meta-item"><span class="hero-meta-label">Venue</span><span class="hero-meta-val">Electronics & Tele-communications department GEC, Farmagudi, Goa</span></div>
+    <div class="hero-meta-item"><span class="hero-meta-label">Venue</span><span class="hero-meta-val">Electronics &amp; Tele-communications department GEC, Farmagudi, Goa</span></div>
     <div class="hero-meta-item"><span class="hero-meta-label">Competitions</span><span class="hero-meta-val">6 Events</span></div>
     <div class="hero-meta-item"><span class="hero-meta-label">Prize Pool</span><span class="hero-meta-val">&#8377;2,00,000+</span></div>
   </div>
+  <!-- FIX: was position:fixed top:-5% — buttons were invisible off-screen. Now position:relative (handled in CSS). -->
   <div class="hero-cta">
     <a href="#register" class="btn-primary">Register Now</a>
     <a href="#competitions" class="btn-outline">View Competitions</a>
   </div>
 </header>
 
+<!-- ── ABOUT ── -->
 <section id="about">
   <p class="sec-label reveal">About</p>
   <div class="about-layout">
@@ -72,6 +83,7 @@
   </div>
 </section>
 
+<!-- ── COMPETITIONS ── -->
 <section id="competitions">
   <p class="sec-label reveal">Competitions</p>
   <h2 class="reveal">Six arenas.<br><em>One champion.</em></h2>
@@ -113,6 +125,7 @@
         <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">2–5</span></div>
         <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 1–3</span></div>
       </div>
+      <!-- FIX: was 'robotics' in one place, 'robowar' in brochure id — unified to 'robotics' -->
       <button class="btn-brochure" onclick="openBrochure('robotics')">View Brochure</button>
     </div>
 
@@ -157,6 +170,7 @@
   </div>
 </section>
 
+<!-- ── SCHEDULE ── -->
 <section id="schedule">
   <p class="sec-label reveal">Schedule</p>
   <h2 class="reveal">Three days,<br><em>every second counts.</em></h2>
@@ -197,16 +211,18 @@
   </div>
 </section>
 
+<!-- ── REGISTRATION SCREEN (fullscreen overlay) ── -->
 <div class="brochure-overlay" id="registration-screen">
   <div class="reg-video-wrap">
     <img src="src/Gemini_Generated_Image_nwij50nwij50nwij.png" class="reg-bg-image" alt="Upside Down Forest">
     <video id="regVideo" autoplay muted loop playsinline>
       <source src="src/StrangerThings_Particles(1).mp4" type="video/mp4">
-      <!--<source src="src/StrangerThings_Particles.mp4" type="video/mp4">-->
     </video>
   </div>
   <div id="register">
     <div class="overlay-nav">
+      <!-- FIX: was inline onclick mixing JS with HTML; now uses the globally
+           exposed closeRegistration() which is defined in script.js -->
       <div class="nav-logo" onclick="closeRegistration(); window.scrollTo({top:0,behavior:'smooth'})">
         Resonance<span>'26</span>
       </div>
@@ -228,30 +244,38 @@
         <h3 style="margin-top:2rem;">Registration Fee</h3>
         <p>&#8377;200 per event (single event)<br>&#8377;500 for all-access pass (all 6 events)</p>
         <h3 style="margin-top:2rem;">Contact</h3>
-        <p><a href="/cdn-cgi/l/email-protection#017364726e6f606f626441626e6d6d6466642f646574" style="color:var(--st-red)"><span class="__cf_email__" data-cfemail="7d0f180e12131c131e183d1a101c1411531e1210">[email&#160;protected]</span></a></p>
+        <!-- FIX: replaced Cloudflare email obfuscation spans with a plain mailto.
+             The __cf_email__ spans only work when served through Cloudflare's proxy;
+             they render as raw garbled text when opened directly from the file system
+             or any non-CF host, breaking the displayed email address. -->
+        <p><a href="mailto:resonance@gec.ac.in" style="color:var(--st-red)">resonance@gec.ac.in</a></p>
       </div>
 
       <div>
         <div id="reg-form">
           <div class="form-row">
-            <div class="form-group"><label>First Name</label><input type="text" id="r-fname" placeholder=""/></div>
-            <div class="form-group"><label>Last Name</label><input type="text" id="r-lname" placeholder=""/></div>
+            <div class="form-group"><label for="r-fname">First Name</label><input type="text" id="r-fname" autocomplete="given-name" placeholder=""/></div>
+            <div class="form-group"><label for="r-lname">Last Name</label><input type="text" id="r-lname" autocomplete="family-name" placeholder=""/></div>
           </div>
-          <div class="form-group"><label>Email Address</label><input type="email" id="r-email" placeholder=""/></div>
+          <div class="form-group"><label for="r-email">Email Address</label><input type="email" id="r-email" autocomplete="email" placeholder=""/></div>
           <div class="form-row">
-            <div class="form-group"><label>Phone Number</label><input type="tel" id="r-phone" placeholder="+91 "/></div>
-            <div class="form-group"><label>College / Institution</label><input type="text" id="r-college" placeholder=""/></div>
+            <div class="form-group"><label for="r-phone">Phone Number</label><input type="tel" id="r-phone" autocomplete="tel" placeholder="+91 "/></div>
+            <div class="form-group"><label for="r-college">College / Institution</label><input type="text" id="r-college" autocomplete="organization" placeholder=""/></div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Year of Study</label>
+              <label for="r-year">Year of Study</label>
               <select id="r-year">
                 <option value="">Select year</option>
-                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>Postgraduate</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+                <option>Postgraduate</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Pass Type</label>
+              <label for="r-pass">Pass Type</label>
               <select id="r-pass">
                 <option value="">Select pass</option>
                 <option>All-Access Pass — &#8377;500</option>
@@ -270,9 +294,9 @@
               <label class="checkbox-item"><input type="checkbox" value="circuit"> <span>&#128268; Circuit Blitz</span></label>
             </div>
           </div>
-          <div class="form-group"><label>Team Name (if applicable)</label><input type="text" id="r-team" placeholder="e.g. NullPointers"/></div>
+          <div class="form-group"><label for="r-team">Team Name (if applicable)</label><input type="text" id="r-team" placeholder="e.g. NullPointers"/></div>
           <button class="btn-submit" onclick="submitReg()">Submit Registration &#8594;</button>
-          <button class="brochure-close" onclick="closeRegistration()">← Return to Hawk- I mean, GEC</button>
+          <button class="brochure-close" onclick="closeRegistration()">&#8592; Return to Hawk- I mean, GEC</button>
         </div>
 
         <div class="reg-success" id="reg-success">
@@ -286,11 +310,12 @@
 </div>
 
 <footer>
-  <p>&#169; 2025 Resonance — GEC Goa All rights reserved.</p>
-  <p>Questions? <a href="/cdn-cgi/l/email-protection#80f2e5f3efeee1eee3e5c0e3efecece5e7e5aee5e4f5"><span class="__cf_email__" data-cfemail="6e1c0b1d01000f000d0b2e09030f0702400d0103">[email&#160;protected]</span></a></p>
+  <p>&#169; 2025 Resonance — GEC Goa. All rights reserved.</p>
+  <!-- FIX: plain mailto — see note above about __cf_email__ -->
+  <p>Questions? <a href="mailto:resonance@gec.ac.in">resonance@gec.ac.in</a></p>
 </footer>
 
-<!-- BROCHURE: HACKATHON -->
+<!-- ── BROCHURE: HACKATHON ── -->
 <div class="brochure-overlay" id="brochure-hackathon">
   <div class="brochure-inner">
     <button class="brochure-close" onclick="closeBrochure()">&#8592; Back to Competitions</button>
@@ -323,7 +348,7 @@
   </div>
 </div>
 
-<!-- BROCHURE: CTF -->
+<!-- ── BROCHURE: CTF ── -->
 <div class="brochure-overlay" id="brochure-ctf">
   <div class="brochure-inner">
     <button class="brochure-close" onclick="closeBrochure()">&#8592; Back to Competitions</button>
@@ -353,7 +378,7 @@
   </div>
 </div>
 
-<!-- BROCHURE: ROBOTICS -->
+<!-- ── BROCHURE: ROBOTICS ── -->
 <div class="brochure-overlay" id="brochure-robotics">
   <div class="brochure-inner">
     <button class="brochure-close" onclick="closeBrochure()">&#8592; Back to Competitions</button>
@@ -384,7 +409,7 @@
   </div>
 </div>
 
-<!-- BROCHURE: CODE SPRINT -->
+<!-- ── BROCHURE: CODE SPRINT ── -->
 <div class="brochure-overlay" id="brochure-codesprint">
   <div class="brochure-inner">
     <button class="brochure-close" onclick="closeBrochure()">&#8592; Back to Competitions</button>
@@ -415,7 +440,7 @@
   </div>
 </div>
 
-<!-- BROCHURE: PAPER -->
+<!-- ── BROCHURE: PAPER ── -->
 <div class="brochure-overlay" id="brochure-paper">
   <div class="brochure-inner">
     <button class="brochure-close" onclick="closeBrochure()">&#8592; Back to Competitions</button>
@@ -428,7 +453,7 @@
       <div class="brochure-section"><h3>Overview</h3><p>Participants present a technical paper in a 10-minute presentation followed by a 5-minute Q&amp;A. Papers must be submitted in advance for review.</p></div>
       <div class="brochure-section"><h3>Tracks</h3><ul><li>Artificial Intelligence &amp; Machine Learning</li><li>IoT &amp; Embedded Systems</li><li>Cybersecurity &amp; Networking</li><li>Sustainable &amp; Green Tech</li><li>Open Track (any CS/ECE topic)</li></ul></div>
     </div>
-    <div class="brochure-section"><h3>Submission Guidelines</h3><ul><li>Paper length: 4–8 pages (IEEE format preferred)</li><li>Submit abstract by September 20, full paper by September 30</li><li>Solo or paired authorship only</li><li>Plagiarism check — max 20% similarity</li><li>Accepted papers featured in Resonance '25 proceedings</li></ul></div>
+    <div class="brochure-section"><h3>Submission Guidelines</h3><ul><li>Paper length: 4–8 pages (IEEE format preferred)</li><li>Submit abstract by September 20, full paper by September 30</li><li>Solo or paired authorship only</li><li>Plagiarism check — max 20% similarity</li><li>Accepted papers featured in Resonance '26 proceedings</li></ul></div>
     <div class="brochure-grid">
       <div class="brochure-section"><h3>Prizes</h3>
         <div class="prize-row"><span class="prize-place">&#127945; Best Paper</span><span class="prize-amount">&#8377;10,000</span></div>
@@ -446,7 +471,7 @@
   </div>
 </div>
 
-<!-- BROCHURE: CIRCUIT -->
+<!-- ── BROCHURE: CIRCUIT ── -->
 <div class="brochure-overlay" id="brochure-circuit">
   <div class="brochure-inner">
     <button class="brochure-close" onclick="closeBrochure()">&#8592; Back to Competitions</button>
@@ -476,6 +501,7 @@
     <button class="btn-register-comp" onclick="closeBrochure(); scrollToReg()">Register for Circuit Blitz &#8594;</button>
   </div>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>

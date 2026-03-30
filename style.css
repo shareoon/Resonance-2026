@@ -39,6 +39,8 @@ body {
   line-height: 1.7;
   overflow-x: hidden;
   animation: flicker 7s ease-in-out infinite;
+  /* Isolate body stacking context so pseudo-element overlays work correctly */
+  isolation: isolate;
 }
 
 /* CRT scanline overlay */
@@ -48,6 +50,7 @@ body::before {
   background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
   pointer-events: none;
   animation: scanMove 8s linear infinite;
+  will-change: background-position;
 }
 
 /* Grid overlay */
@@ -59,7 +62,10 @@ body::after {
   pointer-events: none;
 }
 
-* { position: relative; z-index: 1; }
+/* Removed: * { position: relative; z-index: 1; }
+   This rule created a new stacking context on EVERY element, completely
+   breaking z-index layering and causing random render/paint glitches.
+   Stacking contexts are now set only where explicitly needed. */
 
 /* ── ANIMATIONS ── */
 @keyframes scanMove {
@@ -118,6 +124,7 @@ body::after {
   position: fixed; inset: 0; z-index: 0;
   pointer-events: none;
   opacity: 0.18;
+  will-change: contents;
 }
 
 .spore {
@@ -129,6 +136,7 @@ body::after {
   z-index: 2;
   box-shadow: 0 0 6px #ff0000;
   animation: floatSpore linear infinite;
+  will-change: transform, opacity;
 }
 
 /* ── NAV ── */
@@ -147,6 +155,7 @@ nav {
   color: var(--st-red);
   text-shadow: 0 0 18px var(--st-glow), 0 0 40px rgba(180,0,0,0.4);
   animation: textFlicker 5s ease-in-out infinite;
+  will-change: opacity;
 }
 .nav-logo span { color: var(--text); opacity: 0.4; font-weight: 400; font-size: 0.8rem; margin-left: 0.5rem; font-family: var(--mono); }
 
@@ -178,6 +187,7 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
   width: 100%; height: 100%; object-fit: cover;
   opacity: 0.42;
   filter: saturate(0.55) brightness(0.5) contrast(1.2) sepia(0.25) hue-rotate(-8deg);
+  will-change: transform;
 }
 
 .hero-video-wrap::before {
@@ -201,6 +211,7 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
   background: radial-gradient(circle, rgba(180,0,0,0.15) 0%, rgba(100,0,0,0.06) 50%, transparent 70%);
   pointer-events: none; z-index: 0;
   animation: pulse 4s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
 
 .hero-glow-2 {
@@ -208,6 +219,7 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
   background: radial-gradient(circle, rgba(140,0,0,0.2) 0%, transparent 65%);
   pointer-events: none; z-index: 0;
   animation: pulse 6s ease-in-out infinite alternate-reverse;
+  will-change: transform, opacity;
 }
 
 .hero-header-flex {
@@ -284,7 +296,7 @@ h1::before {
 .hero-meta-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--st-red); opacity: 0.8; }
 .hero-meta-val   { font-family: var(--display); font-weight: 600; font-size: 1rem; }
 
-.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; position: fixed; top: -5%; margin-top: 3rem; animation: fadeUp 0.8s 0.4s ease both; }
+.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; margin-top: 3rem; animation: fadeUp 0.8s 0.4s ease both; }
 
 .btn-primary { padding: 0.9rem 2.5rem; background: var(--st-red); color: #fff; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; font-weight: 500; transition: opacity 0.2s, box-shadow 0.2s; }
 .btn-primary:hover { opacity: 0.85; box-shadow: 0 0 30px var(--st-glow); }
@@ -334,9 +346,41 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
 .btn-brochure:hover { background: rgba(180,0,0,0.1); border-color: var(--st-red); box-shadow: 0 0 15px rgba(180,0,0,0.3); }
 .btn-brochure::before { content: '↓ '; }
 
-/* ── BROCHURE OVERLAY ── */
-.brochure-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(5,0,0,0.97); overflow-y: auto; }
-.brochure-overlay.open { display: block; }
+/* ── BROCHURE OVERLAY ──
+   KEY FIX: never toggle display:none/block — that races with CSS animations
+   and causes the "flash to final state on first open" glitch because the
+   browser collapses the transition into a single frame.
+   Instead we keep the element in the render tree at all times using
+   visibility + pointer-events. The animation always has a valid start state. */
+.brochure-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(5,0,0,0.97); overflow-y: auto;
+  /* hidden state */
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.03);
+  will-change: opacity, transform, visibility;
+}
+.brochure-overlay.open {
+  visibility: visible;
+  pointer-events: auto;
+  animation: overlayOpen 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.brochure-overlay.closing {
+  visibility: visible; /* keep visible while animating out */
+  pointer-events: none;
+  animation: overlayClose 0.35s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes overlayOpen {
+  from { opacity: 0; transform: scale(1.03); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+@keyframes overlayClose {
+  from { opacity: 1; transform: scale(1);    }
+  to   { opacity: 0; transform: scale(1.03); }
+}
 
 .brochure-inner { max-width: 860px; margin: 4rem auto; padding: 0 1.5rem 4rem; }
 
@@ -437,32 +481,20 @@ textarea { resize: vertical; min-height: 80px; }
 .reg-success h3 { font-family: 'ITC Benguiat'; font-size: 1.8rem; font-weight: 400; text-transform: uppercase; color: var(--st-red); text-shadow: 0 0 20px var(--st-glow); }
 .reg-success p { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; margin-top: 0.5rem; }
 
-/* ── REGISTRATION SCREEN (fullscreen overlay — Upside Down moonlit) ── */
+/* ── REGISTRATION SCREEN (fullscreen overlay — Upside Down moonlit) ──
+   Inherits the visibility-based open/close system from .brochure-overlay.
+   We only need overrides for the unique visual properties. */
 
-/* Override the .brochure-overlay base so its opaque bg doesn't bury our layers */
 #registration-screen.brochure-overlay {
-  background: transparent;
-  height: auto;
-  overflow: auto;
-  z-index: 10000;
+  background: transparent;   /* layers (bg image + video) handle the bg */
+  overflow: hidden;           /* no scrollbar on the screen itself — inner #register scrolls */
+  z-index: 10000;             /* above brochure overlays */
 }
 
+/* Hidden default state — already set by .brochure-overlay base, but be explicit */
 #registration-screen {
-  display: none;
   position: fixed; inset: 0; z-index: 10000;
-  /* Deep moonlit base — near-black with a cold blue undertone */
   background: #00020a;
-  overflow: hidden;
-}
-
-#registration-screen.open {
-  display: block;
-  animation: portalFade 0.6s ease forwards;
-}
-
-@keyframes portalFade {
-  from { opacity: 0; transform: scale(1.04); }
-  to   { opacity: 1; transform: scale(1); }
 }
 
 
@@ -636,7 +668,7 @@ textarea { resize: vertical; min-height: 80px; }
   cursor: pointer;
   backdrop-filter: blur(6px);
   transition: all 0.2s;
-  animation: portalFade 0.6s ease backwards;
+  animation: overlayOpen 0.6s ease backwards;
 }
 .reg-close:hover {
   background: rgba(10, 25, 70, 0.9);
