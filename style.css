@@ -445,14 +445,14 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
 /* The door image — fills gate, zoomed by JS on click */
 #entrance-gate .reg-bg-image {
   position: absolute; inset: 0;
+  top: -10%;
   width: 100%; height: 100%;
   object-fit: cover; object-position: center center;
-  filter: brightness(1.2) contrast(1.1) saturate(0.85);
+  filter: brightness(0.8) contrast(1.5) saturate(1);
   z-index: 0;
   will-change: transform;
   transform-origin: center center;
-  scale: 1.5;
-  top: -20%;
+  scale: 1.2;
 }
 
 /* Vignette so button stays readable */
@@ -469,7 +469,6 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
 
 #enter-btn {
   position: relative; z-index: 2;
-  top: 40%;
   padding: 1.2rem 3rem;
   background: transparent;
   color: var(--st-red);
@@ -481,6 +480,7 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
   box-shadow: 0 0 20px var(--st-glow), inset 0 0 20px rgba(200,0,0,0.05);
   transition: box-shadow 0.3s ease, background 0.3s ease;
 }
+
 
 #enter-btn:hover {
   background: rgba(200,0,0,0.08);
