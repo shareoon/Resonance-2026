@@ -433,15 +433,44 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
 .badge-social   { border-color: #8b3a8b; color: #8b3a8b; }
 .badge-workshop { border-color: #1a8040; color: #1a8040; }
 
+
 /* ── ENTRANCE GATE ── */
 #entrance-gate {
   position: fixed; inset: 0; z-index: 9999;
-  background: var(--bg);
+  background: #000;
   display: flex; justify-content: center; align-items: center;
+  overflow: hidden;
+}
+
+/* The door image — fills gate, zoomed by JS on click */
+#entrance-gate .reg-bg-image {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  filter: brightness(1.2) contrast(1.1) saturate(0.85);
+  z-index: 0;
+  will-change: transform;
+  transform-origin: center center;
+  scale: 1.5;
+  top: -20%;
+}
+
+/* Vignette so button stays readable */
+#entrance-gate::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(ellipse at center,
+    transparent 30%,
+    rgba(0,0,0,0.55) 75%,
+    rgba(0,0,0,0.85) 100%
+  );
+  pointer-events: none;
 }
 
 #enter-btn {
-  padding: 1.5rem 3rem;
+  position: relative; z-index: 2;
+  top: 40%;
+  padding: 1.2rem 3rem;
   background: transparent;
   color: var(--st-red);
   border: 2px solid var(--st-red);
@@ -449,8 +478,15 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
   font-size: 1.5rem;
   letter-spacing: 0.2em;
   cursor: pointer;
-  box-shadow: 0 0 20px var(--st-glow);
+  box-shadow: 0 0 20px var(--st-glow), inset 0 0 20px rgba(200,0,0,0.05);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
 }
+
+#enter-btn:hover {
+  background: rgba(200,0,0,0.08);
+  box-shadow: 0 0 40px var(--st-glow), 0 0 80px rgba(180,0,0,0.3);
+}
+
 
 /* ── REGISTER SECTION (main page) ── */
 .reg-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }

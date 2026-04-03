@@ -14,23 +14,45 @@ document.addEventListener('DOMContentLoaded', () => {
   video.muted = true;
   video.play().catch(() => {}); // silence the promise rejection — expected on mobile
 
-  // ── 2. Entrance gate ─────────────────────────────────────
+
+  // ── 2. Entrance gate — door zoom animation ────────────────
   if (enterBtn) {
     enterBtn.addEventListener('click', () => {
+      // Unmute hero video
       video.muted = false;
-      video.play().catch(() => {}); // some browsers still block until a gesture; silently ignore
-
+      video.play().catch(() => {});
       soundBtn.textContent = '🔊';
       localStorage.setItem('soundEnabled', 'true');
 
-      // CSS transition handles the fade; we remove from layout after
-      gate.style.transition = 'opacity 0.5s ease';
-      gate.style.opacity = '0';
-      gate.addEventListener('transitionend', () => {
+      // Step 1: button fades out
+      enterBtn.style.transition = 'opacity 0.35s ease';
+      enterBtn.style.opacity = '0';
+      enterBtn.style.pointerEvents = 'none';
+
+      // Step 2: image zooms in like walking through the door
+      const doorImg = document.getElementById('entranceimage');
+      setTimeout(() => {
+        if (doorImg) {
+          doorImg.style.transition = 'transform 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          doorImg.style.transformOrigin = 'center center';
+          doorImg.style.transform = 'scale(6)';
+        }
+        // Gate fades out as zoom reaches full
+        gate.style.transition = 'opacity 0.75s ease';
+        gate.style.opacity = '0';
+      }, 300);
+
+      // Step 3: hide gate entirely after animation
+      setTimeout(() => {
         gate.style.display = 'none';
-      }, { once: true });
+        if (doorImg) doorImg.style.transform = '';
+        gate.style.opacity = '';
+      }, 2100);
     });
   }
+
+
+
 
   // ── 3. Mute toggle ───────────────────────────────────────
   soundBtn.addEventListener('click', e => {
