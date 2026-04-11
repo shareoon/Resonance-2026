@@ -252,7 +252,8 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
 h1 {
   font-family: 'ITC Benguiat';
   align-self: center; text-align: center;
-  font-weight: 600;
+  font-weight: normal;
+  font-display: block;
   font-size: clamp(3rem, 14vw, 14rem);
   line-height: 0.68;
   letter-spacing: -0.05em;
@@ -260,6 +261,8 @@ h1 {
   display: inline-block;
   color: transparent;
   -webkit-text-stroke: 3px #ff3b3b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 .outline, h1 .big, h1 .year {
@@ -268,6 +271,8 @@ h1 .outline, h1 .big, h1 .year {
   vertical-align: top;
   position: relative;
   bottom: -15%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 .big  { font-size: clamp(7rem, 17vw, 17rem); left: 0%; }
@@ -481,7 +486,6 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
   transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
-
 #enter-btn:hover {
   background: rgba(200,0,0,0.08);
   box-shadow: 0 0 40px var(--st-glow), 0 0 80px rgba(180,0,0,0.3);
@@ -615,6 +619,12 @@ textarea { resize: vertical; min-height: 80px; }
   -webkit-backdrop-filter: none;
   border: none;
   box-shadow: none;
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE / Edge legacy */
+}
+
+#registration-screen #register::-webkit-scrollbar {
+  display: none;                  /* Chrome, Safari, Opera */
 }
 
 /* ── TYPOGRAPHY ── */
@@ -744,8 +754,10 @@ footer a { color: var(--st-red); text-decoration: none; }
 @media (max-width: 768px) {
   h1 {
     font-size: clamp(3.5rem, 18vw, 9rem);
+    font-display: block;
     line-height: 0.65; letter-spacing: -0.05em;
-    -webkit-text-stroke: 2.5px #ff3b3b;
+    -webkit-text-stroke: 2px #ff3b3b;
+    -webkit-font-smoothing: antialiased;
     transform: scale(0.95);
   }
   h1 .outline, h1 .big, h1 .year { -webkit-text-stroke: 2.5px #ff3b3b; bottom: -12%; }
