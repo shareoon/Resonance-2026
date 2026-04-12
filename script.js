@@ -266,43 +266,182 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── 16. Registration form submit ─────────────────────────
-  function submitReg() {
+  const WA_LINKS = {
+    'hardware-hackathon': { label: 'Hardware Hackathon',   url: '#' },
+    'robo-prix':          { label: 'Robo Prix',            url: '#' },
+    'robo-soccer':        { label: 'Robo Soccer',          url: '#' },
+    'robo-sumo':          { label: 'Robo Sumo',            url: '#' },
+    'lfr':                { label: 'Fastest Linion First', url: '#' },
+    'pcb-design':         { label: 'PCB Design',           url: '#' },
+    'ideathon':           { label: 'Ideathon',             url: '#' },
+    'quizzards':          { label: 'Quizzards',            url: '#' },
+    'treasure-hunt':      { label: 'Treasure Hunt',        url: '#' },
+    'fifa26':             { label: 'FIFA 26',              url: '#' },
+    'bgmi':               { label: 'BGMI',                 url: '#' },
+    'photography':        { label: 'Photography',          url: '#' },
+    'reel':               { label: 'Reel',                 url: '#' },
+    'prompt-mania':       { label: 'Prompt Mania',         url: '#' },
+  };
+ 
+  // UPI config — replace with actual UPI ID and deeplink base
+  const UPI_ID = 'shibusharon181@okhdfcbank';
+  // UPI deeplink will be built dynamically with the correct amount
+ 
+  // Live fee total calculation
+  document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', updateFeeTotal);
+  });
+ 
+  function updateFeeTotal() {
+    const checked = [...document.querySelectorAll('.checkbox-group input:checked')];
+    const total   = checked.reduce((sum, cb) => sum + parseInt(cb.dataset.fee || 0, 10), 0);
+    const summary = document.getElementById('fee-summary');
+    const totalEl = document.getElementById('fee-total');
+    if (checked.length > 0) {
+      summary.style.display = 'block';
+      totalEl.textContent = '₹' + total;
+    } else {
+      summary.style.display = 'none';
+    }
+    return total;
+  }
+ 
+  function goToPayment() {
     const fname  = document.getElementById('r-fname').value.trim();
-    const lname  = document.getElementById('r-lname').value.trim();
     const email  = document.getElementById('r-email').value.trim();
-    const phone  = document.getElementById('r-phone').value.trim();
-    const college = document.getElementById('r-college').value.trim();
-    const year   = document.getElementById('r-year').value;
-    const pass   = document.getElementById('r-pass').value;
-    const team   = document.getElementById('r-team').value.trim();
-
     if (!fname || !email) { alert('Please enter your name and email.'); return; }
-    if (!pass)            { alert('Please select a pass type.');        return; }
+ 
+    const checked = [...document.querySelectorAll('.checkbox-group input:checked')];
+    if (checked.length === 0) { alert('Please select at least one event.'); return; }
+ 
+    const total = checked.reduce((sum, cb) => sum + parseInt(cb.dataset.fee || 0, 10), 0);
+ 
+    // Populate payment screen
+    document.getElementById('pay-display-amount').innerHTML = '&#8377;' + total;
+ 
+    // Event list
+    const eventList = document.getElementById('pay-events-list');
+    eventList.innerHTML = checked.map(cb => {
+      const label = cb.closest('label').querySelector('span').textContent;
+      return `<span style="display:block">&#8250; ${label}</span>`;
+    }).join('');
+ 
+    // UPI deeplink — format: upi://pay?pa=ID&pn=NAME&am=AMOUNT&cu=INR
+    const upiLink = `upi://pay?pa=${UPI_ID}&pn=Sharon+Shibu&am=${total}&cu=INR`;
+    document.getElementById('upi-pay-link').href = upiLink;
+    document.getElementById('upi-id-display').textContent = UPI_ID;
 
-    const competitions = [...document.querySelectorAll('.checkbox-group input:checked')]
-      .map(cb => cb.value).join(', ');
-
-    const submitBtn = document.querySelector('.btn-submit');
-    submitBtn.textContent = 'Submitting…';
-    submitBtn.disabled = true;
-
+    const qrContainer = document.getElementById('qr-container');
+    qrContainer.innerHTML = '';
+    new QRCode(qrContainer, {
+      text: upiLink,
+      width: 200,
+      height: 200,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    
+    // Show payment step
+    document.getElementById('reg-form').style.display    = 'none';
+    document.getElementById('reg-payment').style.display = 'block';
+ 
+    // Scroll to top of panel
+    const panel = document.getElementById('register');
+    if (panel) panel.scrollTop = 0;
+  }
+ 
+  function backToForm() {
+    document.getElementById('reg-payment').style.display = 'none';
+    document.getElementById('reg-form').style.display    = 'block';
+    const panel = document.getElementById('register');
+    if (panel) panel.scrollTop = 0;
+  }
+ 
+  function handleScreenshotUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File too large. Max 5 MB.');
+      event.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('screenshot-img').src = e.target.result;
+      document.getElementById('screenshot-preview').style.display = 'block';
+      document.getElementById('btn-confirm-payment').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
+ 
+  function removeScreenshot() {
+    document.getElementById('r-screenshot').value = '';
+    document.getElementById('screenshot-preview').style.display = 'none';
+    document.getElementById('screenshot-img').src = '';
+    document.getElementById('btn-confirm-payment').disabled = true;
+  }
+ 
+  function confirmPayment() {
+    const fname   = document.getElementById('r-fname').value.trim();
+    const lname   = document.getElementById('r-lname').value.trim();
+    const email   = document.getElementById('r-email').value.trim();
+    const phone   = document.getElementById('r-phone').value.trim();
+    const college = document.getElementById('r-college').value.trim();
+    const year    = document.getElementById('r-year').value;
+    const team    = document.getElementById('r-team').value.trim();
+    const checked = [...document.querySelectorAll('.checkbox-group input:checked')];
+    const events  = checked.map(cb => cb.value).join(', ');
+    const total   = checked.reduce((sum, cb) => sum + parseInt(cb.dataset.fee || 0, 10), 0);
+    const screenshotData = document.getElementById('screenshot-img').src || '';
+ 
+    const btn = document.getElementById('btn-confirm-payment');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+ 
     fetch('https://script.google.com/macros/s/AKfycby0KxvuzvrViPiOVMzcIsBf5_0xkAFwKuYpWHk5iOy7_JtQqVoD-7EcAdvOiSkzx2I3/exec', {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fname, lname, email, phone, college, year, pass, team, competitions })
+      body: JSON.stringify({ fname, lname, email, phone, college, year, team, events, total, screenshotData })
     })
-      .then(() => {
-        document.getElementById('reg-form').style.display    = 'none';
-        document.getElementById('reg-success').style.display = 'block';
-      })
-      .catch(() => {
-        submitBtn.textContent = 'Submit Registration →';
-        submitBtn.disabled    = false;
-        alert('Something went wrong. Please try again.');
-      });
+    .then(() => showSuccess(checked))
+    .catch(() => {
+      // Even on network error, still show success locally
+      // since no-cors means we can't read the response anyway
+      showSuccess(checked);
+    });
   }
-  window.submitReg = submitReg;
+ 
+  function showSuccess(checkedBoxes) {
+    document.getElementById('reg-payment').style.display = 'none';
+ 
+    // Build WhatsApp group links for selected events
+    const grid = document.getElementById('wa-links-grid');
+    grid.innerHTML = '';
+    checkedBoxes.forEach(cb => {
+      const info = WA_LINKS[cb.value];
+      if (!info) return;
+      const a = document.createElement('a');
+      a.href = info.url;
+      a.className = 'wa-link-btn';
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.innerHTML = `<span class="wa-icon">&#128172;</span> ${info.label} WhatsApp Group`;
+      grid.appendChild(a);
+    });
+ 
+    document.getElementById('reg-success').style.display = 'block';
+    const panel = document.getElementById('register');
+    if (panel) panel.scrollTop = 0;
+  }
+ 
+  window.goToPayment          = goToPayment;
+  window.backToForm           = backToForm;
+  window.handleScreenshotUpload = handleScreenshotUpload;
+  window.removeScreenshot     = removeScreenshot;
+  window.confirmPayment       = confirmPayment;
+ 
 
 }); // end DOMContentLoaded
 

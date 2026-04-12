@@ -17,6 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400&family=Creepster&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -54,10 +55,10 @@
   <h1><span class="big">res</span><span class="outline">ona</span><span class="big">nce</span><br><span class="year">2026</span></h1>
   <p class="hero-tagline">Where engineering meets innovation. Three days of competitions, talks, and breakthroughs.</p>
   <div class="hero-meta">
-    <div class="hero-meta-item"><span class="hero-meta-label">Date</span><span class="hero-meta-val">Apr 20–22, 2026</span></div>
+    <div class="hero-meta-item"><span class="hero-meta-label">Date</span><span class="hero-meta-val">Apr 23–24, 2026</span></div>
     <div class="hero-meta-item"><span class="hero-meta-label">Venue</span><span class="hero-meta-val">Electronics &amp; Tele-communications department GEC, Farmagudi, Goa</span></div>
     <div class="hero-meta-item"><span class="hero-meta-label">Competitions</span><span class="hero-meta-val">6 Events</span></div>
-    <div class="hero-meta-item"><span class="hero-meta-label">Prize Pool</span><span class="hero-meta-val">&#8377;2,00,000+</span></div>
+    <div class="hero-meta-item"><span class="hero-meta-label">Prize Pool</span><span class="hero-meta-val">&#8377;1,00,000+</span></div>
   </div>
   <!-- FIX: was position:fixed top:-5% — buttons were invisible off-screen. Now position:relative (handled in CSS). -->
   <div class="hero-cta">
@@ -88,85 +89,150 @@
 <section id="competitions">
   <p class="sec-label reveal">Competitions</p>
   <h2 class="reveal">Six arenas.<br><em>One champion.</em></h2>
-
+ 
   <div class="comp-grid reveal">
     <div class="comp-card">
-      <div class="comp-icon">&#9889;</div>
-      <h3>Hackathon</h3>
-      <p>24 hours. One problem statement. Build something that matters. Open to teams of 2–4.</p>
-      <div class="comp-tags"><span class="ctag">Software</span><span class="ctag">Teams</span><span class="ctag">24 hrs</span></div>
+      <div class="comp-icon">&#9881;</div>
+      <h3>Hardware Hackathon</h3>
+      <p>Build innovative hardware solutions from scratch. Design, prototype, and present a working hardware project under 24 hours.</p>
+      <div class="comp-tags"><span class="ctag">Hardware</span><span class="ctag">Teams</span><span class="ctag">24 hrs</span></div>
       <div class="comp-meta">
-        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;50,000</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">2–4</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 1–2</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;15,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
       </div>
       <button class="btn-brochure" onclick="openBrochure('hackathon')">View Brochure</button>
     </div>
-
-    <div class="comp-card">
-      <div class="comp-icon">&#128272;</div>
-      <h3>Capture the Flag</h3>
-      <p>Pwn systems, crack ciphers, and exploit vulnerabilities across web, forensics, and reverse engineering.</p>
-      <div class="comp-tags"><span class="ctag">Cybersecurity</span><span class="ctag">Teams</span><span class="ctag">Jeopardy</span></div>
-      <div class="comp-meta">
-        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;30,000</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">1–3</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 2</span></div>
-      </div>
-      <button class="btn-brochure" onclick="openBrochure('ctf')">View Brochure</button>
-    </div>
-
+ 
     <div class="comp-card">
       <div class="comp-icon">&#129302;</div>
-      <h3>Robowar</h3>
-      <p>Design, build, and battle. Combat robotics — your machine vs. theirs in a custom arena.</p>
-      <div class="comp-tags"><span class="ctag">Hardware</span><span class="ctag">Teams</span><span class="ctag">Combat</span></div>
+      <h3>Robo Prix</h3>
+      <p>Race your autonomous or RC robots through an obstacle-laden track. Fastest bot to complete all laps wins.</p>
+      <div class="comp-tags"><span class="ctag">Robotics</span><span class="ctag">Race</span><span class="ctag">Speed</span></div>
       <div class="comp-meta">
-        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;40,000</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">2–5</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 1–3</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;15,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
       </div>
-      <!-- FIX: was 'robotics' in one place, 'robowar' in brochure id — unified to 'robotics' -->
-      <button class="btn-brochure" onclick="openBrochure('robotics')">View Brochure</button>
+      <button class="btn-brochure" onclick="openBrochure('roboprix')">View Brochure</button>
     </div>
-
+ 
     <div class="comp-card">
-      <div class="comp-icon">&#129518;</div>
-      <h3>Code Sprint</h3>
-      <p>Competitive programming at its finest. Solve algorithmic problems under pressure, ranked by speed and correctness.</p>
-      <div class="comp-tags"><span class="ctag">Algorithms</span><span class="ctag">Solo/Pair</span><span class="ctag">Timed</span></div>
+      <div class="comp-icon">&#9917;</div>
+      <h3>Robo Soccer</h3>
+      <p>The beautiful game, robot-style. Program your bot to score goals against opponents in this electrifying robot football tournament.</p>
+      <div class="comp-tags"><span class="ctag">Robotics</span><span class="ctag">Teams</span><span class="ctag">Combat</span></div>
       <div class="comp-meta">
-        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;25,000</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">Solo / 2</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 1</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;15,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
       </div>
-      <button class="btn-brochure" onclick="openBrochure('codesprint')">View Brochure</button>
+      <button class="btn-brochure" onclick="openBrochure('robosoccer')">View Brochure</button>
     </div>
-
+ 
     <div class="comp-card">
-      <div class="comp-icon">&#128196;</div>
-      <h3>Paper Presentation</h3>
-      <p>Present original research or a technical review, judged on depth, innovation, and clarity by an expert panel.</p>
-      <div class="comp-tags"><span class="ctag">Research</span><span class="ctag">Solo/Pair</span><span class="ctag">Presentation</span></div>
+      <div class="comp-icon">&#129354;</div>
+      <h3>Robo Sumo</h3>
+      <p>Build a bot and push your opponents out of the ring. Strategy, torque, and engineering — the sumo ring decides the strongest.</p>
+      <div class="comp-tags"><span class="ctag">Robotics</span><span class="ctag">Combat</span><span class="ctag">Strategy</span></div>
       <div class="comp-meta">
-        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;20,000</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">1–2</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 2</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;18,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
       </div>
-      <button class="btn-brochure" onclick="openBrochure('paper')">View Brochure</button>
+      <button class="btn-brochure" onclick="openBrochure('robosumo')">View Brochure</button>
     </div>
-
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#128267;</div>
+      <h3>Fastest Linion First</h3>
+      <p>Line-following robot race (LFR) — design a bot that reads and follows a track faster than any other. Precision meets speed.</p>
+      <div class="comp-tags"><span class="ctag">LFR</span><span class="ctag">Autonomous</span><span class="ctag">Speed</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;10,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('lfr')">View Brochure</button>
+    </div>
+ 
     <div class="comp-card">
       <div class="comp-icon">&#128268;</div>
-      <h3>Circuit Blitz</h3>
-      <p>Design, simulate, and build circuits to solve a given problem statement. Hardware debuggers welcome.</p>
-      <div class="comp-tags"><span class="ctag">Electronics</span><span class="ctag">Teams</span><span class="ctag">Build</span></div>
+      <h3>PCB Design</h3>
+      <p>Design a printed circuit board for a given problem statement. Judged on efficiency, layout quality, and design innovation.</p>
+      <div class="comp-tags"><span class="ctag">Electronics</span><span class="ctag">Design</span><span class="ctag">Solo/Pair</span></div>
       <div class="comp-meta">
-        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;20,000</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Team Size</span><span class="comp-meta-val">2–3</span></div>
-        <div class="comp-meta-item"><span class="comp-meta-key">Day</span><span class="comp-meta-val">Day 3</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;6,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
       </div>
-      <button class="btn-brochure" onclick="openBrochure('circuit')">View Brochure</button>
+      <button class="btn-brochure" onclick="openBrochure('pcb')">View Brochure</button>
+    </div>
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#128161;</div>
+      <h3>Ideathon</h3>
+      <p>Got a breakthrough idea? Pitch it. Present your innovation to a panel of judges and compete for the best concept award.</p>
+      <div class="comp-tags"><span class="ctag">Innovation</span><span class="ctag">Pitch</span><span class="ctag">Teams</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;6,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('ideathon')">View Brochure</button>
+    </div>
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#128187;</div>
+      <h3>Quizzards</h3>
+      <p>Tech Quiz — test your knowledge across electronics, programming, and engineering fundamentals in this fast-paced quiz battle.</p>
+      <div class="comp-tags"><span class="ctag">Quiz</span><span class="ctag">Tech</span><span class="ctag">Co-Event</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;3,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Co-Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('quizzards')">View Brochure</button>
+    </div>
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#128247;</div>
+      <h3>Photography</h3>
+      <p>Capture the spirit of technology through your lens. Submit your best shot on the given theme and let your eye do the talking.</p>
+      <div class="comp-tags"><span class="ctag">Creative</span><span class="ctag">Solo</span><span class="ctag">Co-Event</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;3,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Co-Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('photography')">View Brochure</button>
+    </div>
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#127918;</div>
+      <h3>FIFA 26 &amp; BGMI</h3>
+      <p>Gaming showdowns — prove your skills in FIFA 26 and BGMI. Two tournaments, one arena, one champion per game.</p>
+      <div class="comp-tags"><span class="ctag">Gaming</span><span class="ctag">Solo/Squad</span><span class="ctag">Co-Event</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;3,000 each</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Co-Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('gaming')">View Brochure</button>
+    </div>
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#127909;</div>
+      <h3>Reel &amp; Prompt Mania</h3>
+      <p>Create a short reel or showcase your AI prompt engineering skills. Where creativity meets technology.</p>
+      <div class="comp-tags"><span class="ctag">Creative</span><span class="ctag">AI</span><span class="ctag">Co-Event</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;5,000 / &#8377;2,500</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Co-Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('creative')">View Brochure</button>
+    </div>
+ 
+    <div class="comp-card">
+      <div class="comp-icon">&#128065;</div>
+      <h3>Treasure Hunt</h3>
+      <p>Decode clues hidden across campus in this tech-themed treasure hunt. Teamwork and lateral thinking win the day.</p>
+      <div class="comp-tags"><span class="ctag">Teamwork</span><span class="ctag">Puzzle</span><span class="ctag">Co-Event</span></div>
+      <div class="comp-meta">
+        <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;3,000</span></div>
+        <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Co-Event</span></div>
+      </div>
+      <button class="btn-brochure" onclick="openBrochure('treasurehunt')">View Brochure</button>
     </div>
   </div>
 </section>
@@ -177,9 +243,8 @@
   <h2 class="reveal">Three days,<br><em>every second counts.</em></h2>
 
   <div class="schedule-tabs reveal">
-    <button class="tab active" onclick="switchTab(0)">Day 1 — Oct 10</button>
-    <button class="tab" onclick="switchTab(1)">Day 2 — Oct 11</button>
-    <button class="tab" onclick="switchTab(2)">Day 3 — Oct 12</button>
+    <button class="tab active" onclick="switchTab(0)">Day 1 — Apr 23</button>
+    <button class="tab" onclick="switchTab(1)">Day 2 — Apr 24</button>
   </div>
 
   <div class="tab-content active" id="tab0">
@@ -284,26 +349,106 @@
               </select>
             </div>
           </div>
+                    <div class="form-row">
+            <div class="form-group">
+              <label for="r-year">Year of Study</label>
+              <select id="r-year">
+                <option value="">Select year</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+                <option>Postgraduate</option>
+              </select>
+            </div>
+          </div>
           <div class="form-group">
-            <label>Select Competition(s)</label>
+            <label>Select Event(s) to Participate</label>
             <div class="checkbox-group">
-              <label class="checkbox-item"><input type="checkbox" value="hackathon"> <span>&#9889; Hackathon</span></label>
-              <label class="checkbox-item"><input type="checkbox" value="ctf"> <span>&#128272; Capture the Flag</span></label>
-              <label class="checkbox-item"><input type="checkbox" value="robowar"> <span>&#129302; Robowar</span></label>
-              <label class="checkbox-item"><input type="checkbox" value="codesprint"> <span>&#129518; Code Sprint</span></label>
-              <label class="checkbox-item"><input type="checkbox" value="paper"> <span>&#128196; Paper Presentation</span></label>
-              <label class="checkbox-item"><input type="checkbox" value="circuit"> <span>&#128268; Circuit Blitz</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="hardware-hackathon" data-fee="150"> <span>&#9881; Hardware Hackathon — &#8377;150</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="robo-prix" data-fee="100"> <span>&#129302; Robo Prix (Robo Race) — &#8377;100</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="robo-soccer" data-fee="100"> <span>&#9917; Robo Soccer — &#8377;100</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="robo-sumo" data-fee="100"> <span>&#129354; Robo Sumo — &#8377;100</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="lfr" data-fee="100"> <span>&#128267; Fastest Linion First (LFR) — &#8377;100</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="pcb-design" data-fee="100"> <span>&#128268; PCB Design — &#8377;100</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="ideathon" data-fee="100"> <span>&#128161; Ideathon — &#8377;100</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="quizzards" data-fee="50"> <span>&#128187; Quizzards (Tech Quiz) — &#8377;50</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="treasure-hunt" data-fee="50"> <span>&#128065; Treasure Hunt — &#8377;50</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="fifa26" data-fee="50"> <span>&#127918; FIFA 26 — &#8377;50</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="bgmi" data-fee="50"> <span>&#127918; BGMI — &#8377;50</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="photography" data-fee="50"> <span>&#128247; Photography — &#8377;50</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="reel" data-fee="50"> <span>&#127909; Reel — &#8377;50</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="prompt-mania" data-fee="50"> <span>&#129302; Prompt Mania — &#8377;50</span></label>
+            </div>
+            <div class="fee-summary" id="fee-summary" style="display:none;">
+              Total: <strong id="fee-total">&#8377;0</strong>
             </div>
           </div>
           <div class="form-group"><label for="r-team">Team Name (if applicable)</label><input type="text" id="r-team" placeholder="e.g. NullPointers"/></div>
-          <button class="btn-submit" onclick="submitReg()">Submit Registration &#8594;</button>
-          <button class="brochure-close" onclick="closeRegistration()">&#8592; Return to Hawk- I mean, GEC</button>
+          <button class="btn-submit" onclick="goToPayment()">Proceed to Payment &#8594;</button>
+          <button class="brochure-close" onclick="closeRegistration()">&#8592; Return to GEC</button>
         </div>
-
-        <div class="reg-success" id="reg-success">
+ 
+        <!-- STEP 2: Payment -->
+        <div id="reg-payment" style="display:none;">
+          <div class="payment-header">
+            <div class="payment-amount-display">
+              <span class="pay-label">Amount to Pay</span>
+              <span class="pay-amount" id="pay-display-amount">&#8377;0</span>
+            </div>
+            <div class="payment-events-list" id="pay-events-list"></div>
+          </div>
+ 
+          <div class="payment-methods">
+            <div class="qr-block">
+              <p class="pay-instruction">Scan QR code or use the UPI link below to complete payment</p>
+              <!-- QR code placeholder — replace src with your actual QR image -->
+              <div class="qr-placeholder" id="qr-container"></div>
+              <div class="upi-link-block">
+                <p class="pay-instruction" style="margin-top:1.2rem;">Or pay via UPI link:</p>
+                <!-- Replace href with actual UPI deeplink e.g. upi://pay?pa=yourId@upi&pn=ASSETS&am=AMOUNT -->
+                <a href="#" id="upi-pay-link" class="btn-upi-pay" target="_blank" rel="noopener">
+                  &#128241; Open UPI App to Pay
+                </a>
+                <p class="upi-note">UPI ID: <strong id="upi-id-display">PLACEHOLDER@upi</strong></p>
+              </div>
+            </div>
+          </div>
+ 
+          <!-- Upload screenshot -->
+          <div class="upload-block">
+            <label for="r-screenshot" class="upload-label">
+              <span class="upload-icon">&#128444;</span>
+              <span class="upload-text">Upload Payment Screenshot</span>
+              <span class="upload-sub">PNG, JPG or JPEG · Max 5MB</span>
+            </label>
+            <input type="file" id="r-screenshot" accept="image/png,image/jpeg,image/jpg" style="display:none;" onchange="handleScreenshotUpload(event)"/>
+            <div class="screenshot-preview" id="screenshot-preview" style="display:none;">
+              <img id="screenshot-img" src="" alt="Payment screenshot preview"/>
+              <button class="remove-screenshot" onclick="removeScreenshot()">&#10005; Remove</button>
+            </div>
+          </div>
+ 
+          <div class="payment-actions">
+            <button class="btn-submit" id="btn-confirm-payment" onclick="confirmPayment()" disabled>
+              Confirm Payment &amp; Register &#8594;
+            </button>
+            <button class="brochure-close" onclick="backToForm()">&#8592; Back to Details</button>
+          </div>
+        </div>
+ 
+        <!-- STEP 3: Success + WhatsApp Links -->
+        <div class="reg-success" id="reg-success" style="display:none;">
           <div class="icon">&#10022;</div>
           <h3>You're In.</h3>
-          <p>We'll email your confirmation and payment details within 24 hours.</p>
+          <p>Registration received! Your screenshot is under review. You'll be confirmed within 24 hours.</p>
+          <div class="wa-links-section" id="wa-links-section">
+            <p class="wa-links-title">&#128172; Join your event WhatsApp groups:</p>
+            <div class="wa-links-grid" id="wa-links-grid">
+              <!-- dynamically populated -->
+            </div>
+          </div>
+          <button class="brochure-close" style="margin-top:2rem;" onclick="closeRegistration()">&#8592; Return to GEC</button>
         </div>
       </div>
     </div>
