@@ -38,19 +38,32 @@ body {
   font-size: 16px;
   line-height: 1.7;
   overflow-x: hidden;
-  animation: flicker 7s ease-in-out infinite;
-  /* Isolate body stacking context so pseudo-element overlays work correctly */
+  /* flicker moved off <body> to #flicker-overlay to avoid full-page recomposite */
   isolation: isolate;
 }
 
-/* CRT scanline overlay */
+/* CRT scanline overlay — static gradient, no animation = zero repaint cost */
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 999;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.10) 2px,
+    rgba(0,0,0,0.10) 4px
+  );
   pointer-events: none;
-  animation: scanMove 8s linear infinite;
-  will-change: background-position;
+  /* No animation, no will-change — static overlay is GPU-free */
+}
+
+/* Flicker lives on its own composited layer, not the root */
+#flicker-overlay {
+  position: fixed; inset: 0; z-index: 998;
+  pointer-events: none;
+  background: transparent;
+  animation: flicker 7s ease-in-out infinite;
+  will-change: opacity;
 }
 
 /* Grid overlay */
@@ -68,11 +81,6 @@ body::after {
    Stacking contexts are now set only where explicitly needed. */
 
 /* ── ANIMATIONS ── */
-@keyframes scanMove {
-  0%   { background-position: 0 0; }
-  100% { background-position: 0 100px; }
-}
-
 @keyframes flicker {
   0%, 100% { opacity: 1; }
   92%  { opacity: 1; }
@@ -771,9 +779,13 @@ footer a { color: var(--st-red); text-decoration: none; }
   #registration-screen input,
   #registration-screen select,
   #registration-screen textarea { background: rgba(3, 8, 28, 0.92); font-size: 0.9rem; }
-  .reg-layout { grid-template-columns: 1fr; gap: 2rem; }
-  .form-row { grid-template-columns: 1fr; }
-  .reg-video-wrap video { filter: brightness(2) contrast(1.4) saturate(0.5) hue-rotate(160deg); }
+
+  /* Disable mix-blend-mode on mobile — GPU composite cost is too high */
+  .reg-video-wrap video {
+    mix-blend-mode: normal;
+    filter: brightness(0.6) contrast(1.2) saturate(0.5) hue-rotate(160deg);
+    opacity: 0.4;
+  }
 
   header {
    height: 120dvh; min-height: 120dvh;
