@@ -1,8 +1,11 @@
-// ============================================================
-// RESONANCE 2026 — script.js (optimised & glitch-hardened)
-// ============================================================
+
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ── Inject flicker overlay (keeps flicker off <body> to avoid full recomposite) ──
+  const flickerOverlay = document.createElement('div');
+  flickerOverlay.id = 'flicker-overlay';
+  document.body.insertBefore(flickerOverlay, document.body.firstChild);
 
   // ── DOM refs ─────────────────────────────────────────────
   const video     = document.getElementById('heroVideo');
@@ -556,8 +559,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // GLITCH FIX: use a document visibility check so the canvas loop
   // pauses when the tab is hidden — prevents accumulated state drift
   // that can cause visual glitching when the tab regains focus.
+  // PERF FIX: also pause when the hero/canvas is scrolled out of view.
+  let vinesPaused = false;
+  const heroEl = document.querySelector('header');
+  if (heroEl) {
+    const vineObserver = new IntersectionObserver(entries => {
+      vinesPaused = !entries[0].isIntersecting;
+    }, { threshold: 0 });
+    vineObserver.observe(heroEl);
+  }
+
   function animVines() {
-    if (document.hidden) {
+    if (document.hidden || vinesPaused) {
       requestAnimationFrame(animVines);
       return;
     }
@@ -577,9 +590,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── B. FLOATING SPORES ───────────────────────────────────────
 (function initSpores() {
-  // Use a DocumentFragment to batch-insert all 30 spores in one DOM write
+  // PERF FIX: fewer spores on mobile — 30 fixed animated divs causes jank on low-end devices
+  const sporeCount = window.innerWidth < 768 ? 8 : 30;
   const frag = document.createDocumentFragment();
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < sporeCount; i++) {
     const el   = document.createElement('div');
     const size = 1.5 + Math.random() * 3;
     el.className = 'spore';
