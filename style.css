@@ -57,13 +57,23 @@ body::before {
   /* No animation, no will-change — static overlay is GPU-free */
 }
 
-/* Flicker lives on its own composited layer, not the root */
+/* Flicker lives on its own composited layer, not the root.
+   Uses a near-black background that flashes to transparent — same visual effect
+   as animating body opacity but isolated to one GPU layer. */
 #flicker-overlay {
   position: fixed; inset: 0; z-index: 998;
   pointer-events: none;
-  background: transparent;
-  animation: flicker 7s ease-in-out infinite;
+  background: var(--bg);
+  animation: flickerOverlay 7s ease-in-out infinite;
   will-change: opacity;
+}
+
+@keyframes flickerOverlay {
+  0%, 91%  { opacity: 0; }
+  93%      { opacity: 0.65; }
+  94%      { opacity: 0; }
+  96%      { opacity: 0.35; }
+  97%, 100% { opacity: 0; }
 }
 
 /* Grid overlay */
@@ -780,11 +790,15 @@ footer a { color: var(--st-red); text-decoration: none; }
   #registration-screen select,
   #registration-screen textarea { background: rgba(3, 8, 28, 0.92); font-size: 0.9rem; }
 
-  /* Disable mix-blend-mode on mobile — GPU composite cost is too high */
+  /* On mobile: keep mix-blend-mode:screen so particles still glow,
+     but reduce filter intensity slightly to ease GPU load */
   .reg-video-wrap video {
-    mix-blend-mode: normal;
-    filter: brightness(0.6) contrast(1.2) saturate(0.5) hue-rotate(160deg);
-    opacity: 0.4;
+    filter: brightness(2) contrast(1.4) saturate(0.5) hue-rotate(160deg);
+  }
+
+  /* Darken bg image slightly on mobile so form text stays readable */
+  .reg-bg-image {
+    opacity: 0.35;
   }
 
   header {
