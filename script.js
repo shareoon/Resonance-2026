@@ -1,4 +1,6 @@
-
+// ============================================================
+// RESONANCE 2026 — script.js (optimised & glitch-hardened)
+// ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -226,6 +228,73 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.switchTab = switchTab;
 
+  (function() {
+    const HOURS = [9,10,11,12,13,14,15,16,17,18,19,20,21];
+
+    const day0 = [
+      { name: 'Hardware Hackathon', name1:'The Gate Protocol',  start: 11, end: 21, color: 'tl-red' },
+      { name: 'Robo Race', name1:'Escape from Camazotz',           start: 11, end: 17, color: 'tl-red' },
+      { name: 'Robo Soccer', name1:'The Starcourt Battle',         start: 11, end: 19, color: 'tl-red' },
+      { name: 'Tech Quiz', name1:'Mind Trial', start: 11, end: 15, color: 'tl-cyan' },
+      { name: 'Project Presentation', name1:'The NINA Project', start: 11, end: 17, color: 'tl-red' },
+      { name: 'FIFA 26', name1:'Eleven’s KickOff',             start: 10, end: 17, color: 'tl-cyan' },
+      { name: 'Prompt Mania', name1:' Mindscape Protocol',        start: 11, end: 17, color: 'tl-red' },
+    ];
+
+    const day1 = [
+      { name: 'Robo Race (cont.)',  name1:'Escape from Camazotz',       start: 9, end: 17, color: 'tl-red' },
+      { name: 'Robo Sumo',         name1:'VECNA’S COLOSSEUM',        start: 10, end: 19, color: 'tl-red' },
+      { name: 'Line Follower Robot',  name1:'The Rift Track',      start: 10, end: 17, color: 'tl-red' },
+      { name: 'PCB Design',          name1:'Circuit Protocol',      start: 9, end: 21, color: 'tl-red' },
+      { name: 'Ideathon (Shark Tank)', name1:'Dustin’s Cerebro',     start: 10, end: 17, color: 'tl-red' },
+      { name: 'Treasure Hunt',        name1:'Crawl : Beneath Hawkins',     start: 9, end: 17, color: 'tl-cyan' },
+    ];
+
+    function buildTL(tbodyId, events) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
+      events.forEach(ev => {
+        const tr = document.createElement('tr');
+        const nameTd = document.createElement('td');
+        nameTd.className = 'tl-name-cell';
+        nameTd.textContent = ev.name;
+        tr.appendChild(nameTd);
+        for (let i = 0; i < HOURS.length; i++) {
+          const h = HOURS[i];
+          if (h === ev.start) {
+            const span = ev.end - ev.start;
+            const td = document.createElement('td');
+            td.className = 'tl-cell';
+            td.colSpan = span;
+            const block = document.createElement('span');
+            block.className = 'tl-block ' + ev.color;
+            const fmt = h => `${h <= 12 ? h : h-12}${h < 12 ? 'am' : 'pm'}`;
+            block.title = `${ev.name1}: ${fmt(ev.start)} – ${fmt(ev.end)}`;
+            block.textContent = span > 1 ? ev.name1 : '';
+            td.appendChild(block);
+            tr.appendChild(td);
+            i += span - 1;
+          } else if (h < ev.start || h >= ev.end) {
+            const td = document.createElement('td');
+            td.className = 'tl-cell';
+            tr.appendChild(td);
+          }
+        }
+        tbody.appendChild(tr);
+      });
+    }
+
+    buildTL('tl-tbody0', day0);
+    buildTL('tl-tbody1', day1);
+
+    // Override switchTab to also switch timeline days
+    const origSwitch = window.switchTab;
+    window.switchTab = function(n) {
+      if (origSwitch) origSwitch(n);
+      document.querySelectorAll('.tl-day').forEach((d,i) => d.classList.toggle('active', i===n));
+    };
+  })();  
+
   // ── 11. scrollToReg (used by brochure CTA buttons) ───────
   function scrollToReg() { openRegistration(); }
   window.scrollToReg = scrollToReg;
@@ -270,20 +339,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── 16. Registration form submit ─────────────────────────
   const WA_LINKS = {
-    'hardware-hackathon': { label: 'Hardware Hackathon',   url: '#' },
-    'robo-prix':          { label: 'Robo Prix',            url: '#' },
-    'robo-soccer':        { label: 'Robo Soccer',          url: '#' },
-    'robo-sumo':          { label: 'Robo Sumo',            url: '#' },
-    'lfr':                { label: 'Fastest Linion First', url: '#' },
-    'pcb-design':         { label: 'PCB Design',           url: '#' },
-    'ideathon':           { label: 'Ideathon',             url: '#' },
-    'quizzards':          { label: 'Quizzards',            url: '#' },
-    'treasure-hunt':      { label: 'Treasure Hunt',        url: '#' },
-    'fifa26':             { label: 'FIFA 26',              url: '#' },
-    'bgmi':               { label: 'BGMI',                 url: '#' },
-    'photography':        { label: 'Photography',          url: '#' },
-    'reel':               { label: 'Reel',                 url: '#' },
-    'prompt-mania':       { label: 'Prompt Mania',         url: '#' },
+    'hardware-hackathon': { label: 'Hardware Hackathon',   url: 'https://chat.whatsapp.com/BvkZ9wo6qytBPr3U8kzlOM' },
+    'robo-prix':          { label: 'Robo Prix',            url: 'https://chat.whatsapp.com/DpmGXBlQ6vDJ7BqZeptMW4?mode=gi_t' },
+    'robo-soccer':        { label: 'Robo Soccer',          url: 'https://chat.whatsapp.com/G3Z9Rvvazm7I7s3UQNN1me?mode=gi_t' },
+    'robo-sumo':          { label: 'Robo Sumo',            url: 'https://chat.whatsapp.com/DGA3qhNPDA1JeQq1eY9wKV?mode=gi_t' },
+    'lfr':                { label: 'Fastest Linion First', url: '#https://chat.whatsapp.com/HbqxTyeViHp1qRJbHaka8Q?mode=gi_t' },
+    'pcb-design':         { label: 'PCB Design',           url: '#https://chat.whatsapp.com/LMCxOLSa5EIFuVdKqwLPpD?mode=gi_t' },
+    'ideathon':           { label: 'Ideathon',             url: 'https://chat.whatsapp.com/CC8uW81BUIDLVe3btv1ClK?mode=gi_t' },
+    'quizzards':          { label: 'Tech Quiz',            url: 'https://chat.whatsapp.com/GgyiQk1IrGX0S5vvjlWY6p?mode=gi_t' },
+    'treasure-hunt':      { label: 'Treasure Hunt',        url: 'https://chat.whatsapp.com/FVrERRPkUZg14YFVakVhF1?mode=gi_t' },
+    'fifa26':             { label: 'FIFA 26',              url: 'https://chat.whatsapp.com/D6qg9H8H7vqJdSLNEEX4Yq?mode=gi_t' },
+    'project':            { label: 'Project Presentation',  url: 'https://chat.whatsapp.com/FG7vPkLKwG197OefrsjMfc?mode=gi_t' },
+    'photography':        { label: 'Photography',          url: 'https://chat.whatsapp.com/C8wpdm9MOg74N1vHh3ZF5w' },
+    'reel':               { label: 'Reel',                 url: 'https://chat.whatsapp.com/D59dmYaI5azFAcmn2GykCu' },
+    'prompt-mania':       { label: 'Prompt Mania',         url: 'https://chat.whatsapp.com/GYTy1eUHQXlKjTNwiGNNOR?mode=gi_t' },
+    'meme':              { label: 'Meme',                 url: '#'}
   };
  
   // UPI config — replace with actual UPI ID and deeplink base
@@ -336,14 +406,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const qrContainer = document.getElementById('qr-container');
     qrContainer.innerHTML = '';
-    new QRCode(qrContainer, {
-      text: upiLink,
-      width: 200,
-      height: 200,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
+    const img = document.createElement('img');
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiLink)}`;
+    img.alt = 'Scan to Pay';
+    img.style.width = '300px';
+    img.style.height = '300px';
+    img.style.display = 'block';
+
+    qrContainer.appendChild(img);   
     
     // Show payment step
     document.getElementById('reg-form').style.display    = 'none';
@@ -385,37 +455,67 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-confirm-payment').disabled = true;
   }
  
-  function confirmPayment() {
-    const fname   = document.getElementById('r-fname').value.trim();
-    const lname   = document.getElementById('r-lname').value.trim();
-    const email   = document.getElementById('r-email').value.trim();
-    const phone   = document.getElementById('r-phone').value.trim();
-    const college = document.getElementById('r-college').value.trim();
-    const year    = document.getElementById('r-year').value;
-    const team    = document.getElementById('r-team').value.trim();
-    const checked = [...document.querySelectorAll('.checkbox-group input:checked')];
-    const events  = checked.map(cb => cb.value).join(', ');
-    const total   = checked.reduce((sum, cb) => sum + parseInt(cb.dataset.fee || 0, 10), 0);
-    const screenshotData = document.getElementById('screenshot-img').src || '';
- 
-    const btn = document.getElementById('btn-confirm-payment');
-    btn.textContent = 'Submitting…';
-    btn.disabled = true;
- 
-    fetch('https://script.google.com/macros/s/AKfycby0KxvuzvrViPiOVMzcIsBf5_0xkAFwKuYpWHk5iOy7_JtQqVoD-7EcAdvOiSkzx2I3/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fname, lname, email, phone, college, year, team, events, total, screenshotData })
-    })
-    .then(() => showSuccess(checked))
-    .catch(() => {
-      // Even on network error, still show success locally
-      // since no-cors means we can't read the response anyway
-      showSuccess(checked);
-    });
+function confirmPayment() {
+  const btn = document.getElementById('btn-confirm-payment');
+  if (btn.disabled) return;
+
+  const fname   = document.getElementById('r-fname').value.trim();
+  const lname   = document.getElementById('r-lname').value.trim();
+  const email   = document.getElementById('r-email').value.trim();
+  const phone   = document.getElementById('r-phone').value.trim();
+  const college = document.getElementById('r-college').value.trim();
+  const year    = document.getElementById('r-year').value;
+  const team    = document.getElementById('r-team').value.trim();
+
+  const checked = [...document.querySelectorAll('.checkbox-group input:checked')];
+
+  if (!fname || !email || checked.length === 0) {
+    alert('Fill required fields');
+    return;
   }
- 
+
+  const events = checked.map(cb => cb.value).join(', ');
+  const total  = checked.reduce((sum, cb) => sum + parseInt(cb.dataset.fee || 0, 10), 0);
+
+  // Screenshot (base64 only)
+  let screenshotData = '';
+  const img = document.getElementById('screenshot-img');
+  if (img && img.src.includes(',')) {
+    screenshotData = img.src.split(',')[1];
+  }
+
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+
+  const formData = new FormData();
+  formData.append('fname', fname);
+  formData.append('lname', lname);
+  formData.append('email', email);
+  formData.append('phone', phone);
+  formData.append('college', college);
+  formData.append('year', year);
+  formData.append('team', team);
+  formData.append('events', events);
+  formData.append('total', total);
+  formData.append('screenshotData', screenshotData);
+
+  fetch('https://script.google.com/macros/s/AKfycby-A5HjTnc5kS6KvcNgxiOnSPb_5UVE6zWclSV5qlhU-QdXZMZlNE1QRAlkZfVRYnQp/exec', {
+    method: 'POST',
+    body: formData
+  })
+  .then(() => {
+    // Apps Script won't return readable response reliably → assume success
+    showSuccess(checked);
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Submission failed');
+    btn.textContent = 'Confirm Payment';
+    btn.disabled = false;
+  });
+}
+
+
   function showSuccess(checkedBoxes) {
     document.getElementById('reg-payment').style.display = 'none';
  
@@ -746,3 +846,4 @@ document.addEventListener('DOMContentLoaded', () => {
   wall.appendChild(frag);
   section.appendChild(wall);
 })();
+
