@@ -1068,7 +1068,15 @@ footer a { color: var(--st-red); text-decoration: none; }
   /* On mobile: keep mix-blend-mode:screen so particles still glow,
      but reduce filter intensity slightly to ease GPU load */
   .reg-video-wrap video {
-    filter: brightness(2) contrast(1.4) saturate(0.5) hue-rotate(160deg);
+    position: relative; z-index: 1;
+    width: 100%; height: 100%; object-fit: cover;
+
+    /* mix-blend-mode: screen knocks out the black background of the particle video
+      so ONLY the glowing particles are visible — they appear to float in the air */
+    mix-blend-mode: screen;
+
+    /* Boost the particles so they pop — high contrast + slight blue-white shift */
+    filter: brightness(2.2) contrast(1.6) saturate(0.6) hue-rotate(160deg);
   }
 
   /* Darken bg image slightly on mobile so form text stays readable */
