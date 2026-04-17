@@ -504,6 +504,17 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
   transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
+#enter-tag {
+  position: relative; z-index: 2;
+  padding: 1.2rem 3rem;
+  background: transparent;
+  color: var(--st-red);
+  font-family: 'ITC Benguiat';
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
+
 #enter-btn:hover {
   background: rgba(200,0,0,0.08);
   box-shadow: 0 0 40px var(--st-glow), 0 0 80px rgba(180,0,0,0.3);
