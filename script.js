@@ -156,33 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function openBrochure(id) {
-    const el = document.getElementById('brochure-' + id);
-    if (!el) return;
-    // Cancel any in-progress close on this or other brochures
-    document.querySelectorAll('.brochure-overlay.closing:not(#registration-screen)')
-      .forEach(o => _finishClose(o));
-
-    history.pushState({ overlay: 'brochure', id }, '', '');
-    el.classList.remove('closing');
-    el.classList.add('open');
-    el.scrollTop = 0;
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeBrochure() {
-    document.querySelectorAll('.brochure-overlay.open:not(#registration-screen)')
-      .forEach(el => {
-        el.classList.remove('open');
-        el.classList.add('closing');
-        el.addEventListener('animationend', () => _finishClose(el), { once: true });
-        setTimeout(() => { if (el.classList.contains('closing')) _finishClose(el); }, 450);
-      });
-  }
-
-  window.openBrochure  = openBrochure;
-  window.closeBrochure = closeBrochure;
-
   // ── 9. Registration screen ───────────────────────────────
   // Same visibility-based system — no display:none/block anywhere.
 
