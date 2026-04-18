@@ -528,6 +528,7 @@ function confirmPayment() {
       { img: 'src/sponsors/marine.png'   },
       { img: 'src/sponsors/Mssunder.png'   },
       { img: 'src/sponsors/TPMlogo.png'    },
+      { img: 'src/sponsors/GAURVED.jpeg'}
     ];
  
     const TIER_LABELS = {
