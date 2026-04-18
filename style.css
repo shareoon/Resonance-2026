@@ -243,7 +243,7 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
   background: radial-gradient(circle, rgba(180,0,0,0.15) 0%, rgba(100,0,0,0.06) 50%, transparent 70%);
   pointer-events: none; z-index: 0;
   animation: pulse 4s ease-in-out infinite alternate;
-  will-change: transform, opacity;
+  /* will-change removed — pulse only animates opacity+scale, browser promotes automatically */
 }
 
 .hero-glow-2 {
@@ -251,7 +251,6 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
   background: radial-gradient(circle, rgba(140,0,0,0.2) 0%, transparent 65%);
   pointer-events: none; z-index: 0;
   animation: pulse 6s ease-in-out infinite alternate-reverse;
-  will-change: transform, opacity;
 }
 
 .hero-header-flex {
@@ -345,7 +344,20 @@ h1::before {
 .btn-outline:hover { border-color: var(--st-red); color: var(--st-red); }
 
 /* ── SECTIONS ── */
-section { padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 4rem); border-top: 1px solid var(--border); }
+section {
+  padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 4rem);
+  border-top: 1px solid var(--border);
+  /* content-visibility:auto skips paint+layout for off-screen sections.
+     contain-intrinsic-size is an estimated height so scroll bar stays accurate. */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
+/* Override for sections that must always render (hero is <header> not <section>, fine) */
+#about    { contain-intrinsic-size: 0 500px; }
+#competitions { contain-intrinsic-size: 0 1800px; }
+#schedule { contain-intrinsic-size: 0 700px; }
+#sponsors { contain-intrinsic-size: 0 300px; }
 
 .sec-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--st-red); margin-bottom: 1rem; opacity: 0.9; text-shadow: 0 0 10px rgba(180,0,0,0.4); }
 
@@ -367,8 +379,24 @@ h2 em { font-style: normal; color: var(--st-red); text-shadow: 0 0 15px var(--st
 
 .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
 
-.comp-card { background: var(--bg); padding: 2.5rem; cursor: pointer; transition: background 0.2s, box-shadow 0.3s; display: flex; flex-direction: column; }
-.comp-card:hover { background: rgba(180,0,0,0.05); box-shadow: inset 0 0 30px rgba(180,0,0,0.08); }
+.comp-card {
+  background: var(--bg); padding: 2.5rem; cursor: pointer;
+  display: flex; flex-direction: column;
+  position: relative;
+  /* No transition on box-shadow — it's not composited and repaints the whole card */
+}
+
+/* Glow lives on a pseudo — opacity is GPU-composited, no repaint */
+.comp-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 30px rgba(180,0,0,0.08);
+  background: rgba(180,0,0,0.05);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.comp-card:hover::after { opacity: 1; }
 
 .comp-icon { font-size: 2rem; margin-bottom: 1.2rem; }
 .comp-card h3 { font-family: 'ITC Benguiat'; font-weight: 400; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
@@ -706,9 +734,10 @@ textarea { resize: vertical; min-height: 80px; }
 #registration-screen input,
 #registration-screen select,
 #registration-screen textarea {
-  background: rgba(2, 6, 22, 0.72);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  /* backdrop-filter removed from individual inputs — they're already inside a
+     composited overlay. Each blurred input = its own GPU layer = 10+ layers stacked.
+     Solid background achieves the same readability at zero compositor cost. */
+  background: rgba(2, 6, 22, 0.85);
   border: 1px solid rgba(80, 130, 220, 0.3);
   border-radius: 3px;
   color: #ddeeff;
@@ -1061,12 +1090,13 @@ footer a { color: var(--st-red); text-decoration: none; }
   z-index: -1;
 }
 
+
 /* ── SPONSORS MARQUEE ── */
 #sponsors {
   overflow: hidden;
   padding-bottom: clamp(3rem, 6vw, 5rem);
 }
- 
+
 .marquee-outer {
   position: relative;
   overflow: hidden;
@@ -1089,12 +1119,12 @@ footer a { color: var(--st-red); text-decoration: none; }
   border-bottom: 1px solid var(--border);
   padding: 2.2rem 0;
 }
- 
+
 /* Pause on hover — accessibility + lets users read logos */
 .marquee-outer:hover .marquee-track {
   animation-play-state: paused;
 }
- 
+
 .marquee-track {
   display: flex;
   align-items: center;
@@ -1103,12 +1133,12 @@ footer a { color: var(--st-red); text-decoration: none; }
   animation: marqueeScroll 28s linear infinite;
   will-change: transform;
 }
- 
+
 @keyframes marqueeScroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); } /* -50% because we duplicate the list */
 }
- 
+
 /* Each sponsor logo pill */
 .sponsor-item {
   display: flex;
@@ -1120,50 +1150,25 @@ footer a { color: var(--st-red); text-decoration: none; }
   white-space: nowrap;
   flex-shrink: 0;
 }
- 
+
 .sponsor-item:last-child {
   border-right: none;
 }
- 
-/* Logo placeholder block — replace with <img> when you have real logos */
-.sponsor-logo-block {
-  width: 216px;
-  height: 108px;
-  border: 1px solid rgba(180, 20, 20, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  border-radius: 4px;
-  background: rgba(180, 0, 0, 0.05);
-  flex-shrink: 0;
-  transition: border-color 0.25s, box-shadow 0.25s;
-}
- 
-.sponsor-item:hover .sponsor-logo-block {
-  border-color: var(--st-red);
-  box-shadow: 0 0 14px rgba(200, 0, 0, 0.25);
-}
- 
+
+
 /* If using real <img> logos */
 .sponsor-logo-block img {
-  width: 216px;
+  width: 216;
   height: 108px;
-  filter: opacity(1.5);
+  object-fit: contain;
+  filter: brightness(1);
   transition: filter 0.3s;
 }
- 
- 
-/* ── RESPONSIVE ── */
-@media (max-width: 860px) {
-  nav ul { display: none; }
-  .about-layout, .reg-layout { grid-template-columns: 1fr; gap: 2.5rem; }
-  .brochure-grid { grid-template-columns: 1fr; }
-  .sched-item { grid-template-columns: 90px 1fr; }
-  .sched-loc { display: none; }
-  .form-row { grid-template-columns: 1fr; }
-}
 
+
+.sponsor-item:hover .sponsor-name {
+  color: var(--st-red);
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 860px) {
@@ -1254,278 +1259,5 @@ footer a { color: var(--st-red); text-decoration: none; }
     letter-spacing: 0.08em;
   }
   .fee-summary strong { color: #7aaaff; font-size: 1rem; }
-  
-  /* payment step */
-  .payment-header {
-    margin-bottom: 2rem;
-    padding: 1.2rem 1.5rem;
-    background: rgba(5,12,40,0.75);
-    border: 1px solid rgba(100,160,255,0.2);
-    border-radius: 4px;
-    backdrop-filter: blur(6px);
-  }
-  .pay-label {
-    display: block;
-    font-family: var(--mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(140,180,255,0.7);
-    margin-bottom: 0.3rem;
-  }
-  .pay-amount {
-    display: block;
-    font-family: 'ITC Benguiat', Georgia, serif;
-    font-size: clamp(2rem, 6vw, 3rem);
-    color: #d8e8ff;
-    text-shadow: 0 0 20px rgba(100,160,255,0.5);
-  }
-  .payment-events-list {
-    margin-top: 0.8rem;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    color: rgba(140,180,255,0.6);
-    line-height: 1.9;
-    letter-spacing: 0.05em;
-  }
-  
-  .pay-instruction {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    color: rgba(160,200,255,0.7);
-    margin-bottom: 1.2rem;
-  }
-  
-  .qr-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    background: rgba(4,8,28,0.6);
-    border: 1px solid rgba(100,160,255,0.18);
-    border-radius: 6px;
-    backdrop-filter: blur(8px);
-    margin-bottom: 2rem;
-  }
-  
-  .qr-placeholder {
-    border: 2px solid rgba(100,160,255,0.3);
-    border-radius: 6px;
-    padding: 8px;
-    background: rgba(4,8,26,0.9);
-    box-shadow: 0 0 30px rgba(60,110,220,0.2);
-  }
-  
-  .upi-link-block { text-align: center; width: 100%; }
-  
-  .btn-upi-pay {
-    display: inline-block;
-    margin: 0.8rem 0 0.5rem;
-    padding: 0.75rem 2rem;
-    background: linear-gradient(135deg, #1a3a8a, #0d2060);
-    border: 1px solid rgba(100,160,255,0.45);
-    color: #c8dcff;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 3px;
-    transition: all 0.25s ease;
-    box-shadow: 0 0 18px rgba(40,80,200,0.25);
-  }
-  .btn-upi-pay:hover {
-    background: linear-gradient(135deg, #2244aa, #1530aa);
-    box-shadow: 0 0 30px rgba(60,120,255,0.45);
-    color: #fff;
-  }
-  .upi-note {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    color: rgba(120,160,220,0.5);
-    letter-spacing: 0.08em;
-    margin-top: 0.4rem;
-  }
-  .upi-note strong { color: rgba(150,190,255,0.8); }
-  
-  /* upload block */
-  .upload-block {
-    margin-bottom: 2rem;
-    size: 40px;
-  }
-  .upload-label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 2rem;
-    border: 2px dashed rgba(100,160,255,0.25);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    background: rgba(4,8,28,0.4);
-    text-align: center;
-  }
-  .upload-label:hover {
-    border-color: rgba(100,160,255,0.55);
-    background: rgba(8,18,50,0.6);
-    box-shadow: 0 0 20px rgba(60,110,220,0.12);
-  }
-  .upload-icon { font-size: 2rem; }
-  .upload-text {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(160,200,255,0.8);
-  }
-  .upload-sub {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    color: rgba(100,140,200,0.5);
-    letter-spacing: 0.08em;
-  }
-  
-  .screenshot-preview {
-    margin-top: 1rem;
-    position: relative;
-    border: 1px solid rgba(100,160,255,0.25);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .screenshot-preview img {
-    width: 100%;
-    max-height: 220px;
-    object-fit: contain;
-    background: rgba(4,8,26,0.8);
-    display: block;
-  }
-  .remove-screenshot {
-    position: absolute;
-    top: 0.5rem; right: 0.5rem;
-    background: rgba(180,0,0,0.7);
-    border: none;
-    color: #fff;
-    font-size: 0.65rem;
-    padding: 0.25rem 0.6rem;
-    cursor: pointer;
-    border-radius: 3px;
-    font-family: var(--mono);
-    letter-spacing: 0.08em;
-    transition: background 0.2s;
-  }
-  .remove-screenshot:hover { background: rgba(220,0,0,0.9); }
-  
-  .payment-actions { display: flex; flex-direction: column; gap: 1rem; }
-  
-  #btn-confirm-payment:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-  #btn-confirm-payment:disabled:hover {
-    background: linear-gradient(135deg, #1a3a8a 0%, #0d2060 100%);
-    box-shadow: 0 0 20px rgba(40, 80, 200, 0.3);
-  }
-  
-  /* WhatsApp links section */
-  .wa-links-section {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: rgba(5,12,40,0.7);
-    border: 1px solid rgba(100,160,255,0.2);
-    border-radius: 6px;
-  }
-  .wa-links-title {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(160,200,255,0.8);
-    margin-bottom: 1.2rem;
-  }
-  .wa-links-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  .wa-link-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.65rem 1rem;
-    background: rgba(7,126,46,0.18);
-    border: 1px solid rgba(7,180,60,0.3);
-    border-radius: 4px;
-    color: #5de88a;
-    text-decoration: none;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    transition: all 0.2s ease;
-  }
-  .wa-link-btn:hover {
-    background: rgba(7,126,46,0.32);
-    border-color: rgba(7,200,70,0.55);
-    box-shadow: 0 0 16px rgba(7,180,60,0.2);
-    color: #7af5a5;
-  }
-  .wa-icon { font-size: 1.1rem; flex-shrink: 0; }
 
-
-    .tl-wrap { overflow-x: auto; border: 1px solid rgba(180,20,20,0.25); border-radius: 4px; background: #110000; }
-    .tl-table { border-collapse: collapse; min-width: 860px; width: 100%; table-layout: fixed; }
-    .tl-table th {
-      background: #1a0000; color: #cc0000;
-      font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
-      text-align: center; padding: 10px 4px;
-      border-right: 1px solid rgba(180,20,20,0.18);
-      border-bottom: 1px solid rgba(180,20,20,0.35);
-      white-space: nowrap;
-    }
-    .tl-table th.tl-label-col { text-align: left; padding-left: 14px; width: 170px; color: rgba(240,210,210,0.5); font-size: 10px; }
-    .tl-name-cell {
-      padding: 0 14px; font-size: 12px; color: rgba(240,210,210,0.5);
-      font-family: var(--mono); white-space: nowrap; height: 44px;
-      vertical-align: middle; background: #100000;
-      border-bottom: 1px solid rgba(180,20,20,0.18);
-      border-right: 1px solid rgba(180,20,20,0.35);
-      position: sticky; left: 0; z-index: 1;
-    }
-    .tl-cell {
-      border-right: 1px solid rgba(180,20,20,0.18);
-      border-bottom: 1px solid rgba(180,20,20,0.18);
-      height: 44px; padding: 0 2px; vertical-align: middle;
-    }
-    .tl-block {
-      display: block; height: 28px; border-radius: 3px;
-      font-family: var(--mono); font-size: 9px; letter-spacing: 0.05em;
-      text-align: center; line-height: 28px; overflow: hidden;
-      white-space: nowrap; text-overflow: ellipsis; padding: 0 4px;
-      transition: filter 0.2s; cursor: default;
-    }
-    .tl-block:hover { filter: brightness(1.3); }
-    .tl-block.tl-red  { background: rgba(180,0,0,0.25); border: 1px solid #cc0000; color: #ffaaaa; }
-    .tl-block.tl-cyan { background: rgba(0,229,255,0.10); border: 1px solid #00bcd4; color: #80f0ff; }
-    .tl-block.tl-ora  { background: rgba(255,107,53,0.15); border: 1px solid #ff6b35; color: #ffb89a; }
-    .tl-legend { display: flex; gap: 1.5rem; margin-top: 1.2rem; flex-wrap: wrap; }
-    .tl-legend-item { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 11px; color: rgba(240,210,210,0.5); letter-spacing: 0.05em; }
-    .tl-swatch { width: 16px; height: 10px; border-radius: 2px; }
-    .tl-day { display: none; }
-    .tl-day.active { display: block; }
-
-    #schedule {
-      position: relative;
-      z-index: 1;
-      background: var(--bg); /* or slightly darker/lighter */
-    }
-
-    #schedule::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--bg);
-      z-index: -1;
-    }
- 
 }
