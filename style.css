@@ -1158,8 +1158,8 @@ footer a { color: var(--st-red); text-decoration: none; }
 
 /* If using real <img> logos */
 .sponsor-logo-block img {
-  width: 216;
-  height: 108px;
+  width: 400px;
+  height: 200px;
   object-fit: contain;
   filter: brightness(1);
   transition: filter 0.3s;
