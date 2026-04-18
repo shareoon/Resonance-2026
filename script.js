@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
  
   // UPI config — replace with actual UPI ID and deeplink base
-  const UPI_ID = 'sadanandmirashi22@okicici';
+  const UPI_ID = 'shibusharon181@okhdfcbank';
   // UPI deeplink will be built dynamically with the correct amount
  
   // Live fee total calculation
@@ -633,18 +633,28 @@ function confirmPayment() {
   // pauses when the tab is hidden — prevents accumulated state drift
   // that can cause visual glitching when the tab regains focus.
   // PERF FIX: also pause when the hero/canvas is scrolled out of view.
+  // CRITICAL FIX: previous version called rAF even when paused — this caused
+  // scroll events to pile up and produced the reverse-scroll glitch.
+  // Now we track the rAF id and cancel it properly.
   let vinesPaused = false;
+  let vineRafId = null;
   const heroEl = document.querySelector('header');
   if (heroEl) {
     const vineObserver = new IntersectionObserver(entries => {
+      const wasVisible = !vinesPaused;
       vinesPaused = !entries[0].isIntersecting;
+      // Re-start the loop if transitioning from paused → visible
+      if (wasVisible !== !vinesPaused && !vinesPaused && vineRafId === null) {
+        vineRafId = requestAnimationFrame(animVines);
+      }
     }, { threshold: 0 });
     vineObserver.observe(heroEl);
   }
 
   function animVines() {
+    vineRafId = null; // clear before scheduling next
     if (document.hidden || vinesPaused) {
-      requestAnimationFrame(animVines);
+      // Don't schedule another frame while paused — wait for visibility change
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -655,16 +665,26 @@ function confirmPayment() {
       vines[i].update();
       vines[i].draw();
     }
-    requestAnimationFrame(animVines);
+    vineRafId = requestAnimationFrame(animVines);
   }
-  animVines();
+
+  // Resume when tab becomes visible again
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !vinesPaused && vineRafId === null) {
+      vineRafId = requestAnimationFrame(animVines);
+    }
+  });
+
+  vineRafId = requestAnimationFrame(animVines);
 })();
 
 
 // ── B. FLOATING SPORES ───────────────────────────────────────
 (function initSpores() {
-  // PERF FIX: fewer spores on mobile — 30 fixed animated divs causes jank on low-end devices
-  const sporeCount = window.innerWidth < 768 ? 8 : 30;
+  // PERF FIX: significantly fewer spores on mobile — 30 fixed animated divs causes jank.
+  // Each spore is its own composited layer (will-change + fixed position).
+  // Reduced to 20 desktop / 6 mobile.
+  const sporeCount = window.innerWidth < 768 ? 6 : 20;
   const frag = document.createDocumentFragment();
   for (let i = 0; i < sporeCount; i++) {
     const el   = document.createElement('div');
@@ -709,15 +729,31 @@ function confirmPayment() {
   const colors = ['#ff0000','#ff6600','#ffff00','#00ff00','#0066ff','#ff00ff','#ff3333','#ff9900'];
   const frag   = document.createDocumentFragment();
 
-  for (let i = 0; i < 60; i++) {
+  // PERF FIX: reduced from 60 to 36 bulbs. Each bulb with a unique animation-duration
+  // is a separate browser animation timeline — 60 timelines is excessive.
+  // Now we use only 4 CSS classes (cycling bulb-group-0 through 3) so the browser
+  // can share animation state across groups.
+  if (!document.getElementById('kf-bulbGroups')) {
+    const gs = document.createElement('style');
+    gs.id = 'kf-bulbGroups';
+    gs.textContent = `
+      .bg0{animation:bulbFlicker 0.08s 0s   ease-in-out infinite alternate;}
+      .bg1{animation:bulbFlicker 0.11s 0.7s ease-in-out infinite alternate;}
+      .bg2{animation:bulbOn      0.18s 1.4s ease-in-out infinite alternate;}
+      .bg3{animation:bulbOn      0.14s 2.1s ease-in-out infinite alternate;}
+    `;
+    document.head.appendChild(gs);
+  }
+
+  for (let i = 0; i < 36; i++) {
     const bulb  = document.createElement('span');
     const color = colors[i % colors.length];
+    bulb.className = 'bg' + (i % 4);
     bulb.style.cssText = `
       display:inline-block;flex:1;height:8px;
       background:${color};
       box-shadow:0 0 6px ${color},0 0 12px ${color};
       border-radius:50% 50% 40% 40%;
-      animation:bulbFlicker ${0.08 + Math.random() * 0.15}s ${Math.random() * 3}s ease-in-out infinite alternate;
       margin:0 1px;
     `;
     frag.appendChild(bulb);
@@ -819,4 +855,3 @@ function confirmPayment() {
   wall.appendChild(frag);
   section.appendChild(wall);
 })();
-

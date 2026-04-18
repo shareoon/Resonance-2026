@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <title>RESONANCE 2026 — Technical Fest</title>
+
+  <!-- Preload the display font used for h1 — prevents invisible/unstyled text flash -->
+  <link rel="preload" href="fonts/ITCBenguiatStdMediumCn.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
   <!--
     FIX: Added crossorigin preconnect to fonts.gstatic.com.
@@ -22,7 +26,7 @@
 <body>
 
 <div id="entrance-gate">
-  <img src="src/stranger-things-aesthetic-desktop-hrz824k4nubtbmy3.jpg" class="reg-bg-image" id="entranceimage" alt="Upside Down Forest">
+  <img src="src/stranger-things-aesthetic-desktop-hrz824k4nubtbmy3.jpg" class="reg-bg-image" id="entranceimage" alt="Upside Down Forest" loading="eager" decoding="async">
   <button id="enter-btn">Welcome to the Hawkins!<br><span id="enter-tag">Click here to enter</span></button>
 </div>
 
@@ -41,7 +45,8 @@
 
 <header>
   <div class="hero-video-wrap">
-    <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+    <!-- preload=metadata keeps initial load light; video autoplays immediately after gate -->
+    <video id="heroVideo" autoplay muted loop playsinline preload="metadata" disablepictureinpicture>
       <source src="src/Stranger Things _ Title Sequence [HD] _ Netflix.mp4" type="video/mp4">
     </video>
   </div>
@@ -73,7 +78,7 @@
   <div class="about-layout">
     <div class="about-text">
       <h2 class="reveal">Built for<br><em>Builders.</em></h2>
-      <p class="reveal">Resonance is the flagship technical festival of Electronics and Tele-communications department of Goa college of Engineering, bringing together the sharpest engineering and technology minds for two days of high-intensity competition, knowledge exchange, and collaborative problem-solving.</p>
+      <p class="reveal">Resonance is the flagship technical festival of Electronics and Tele-communications department of Goa college of Engineering, bringing together the sharpest engineering and technology minds for three days of high-intensity competition, knowledge exchange, and collaborative problem-solving.</p>
       <p class="reveal">From 12-hour hackathons to precision robotics challenges, Resonance is the arena where ideas are stress-tested and talent is recognised.</p>
     </div>
     <div class="stats-grid reveal">

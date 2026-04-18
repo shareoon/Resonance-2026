@@ -26,7 +26,7 @@
        url('fonts/ITCBenguiatStdMediumCn.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: swap; /* prevents invisible text while font loads */
 }
 
 html { scroll-behavior: smooth; }
@@ -38,34 +38,49 @@ body {
   font-size: 16px;
   line-height: 1.7;
   overflow-x: hidden;
-  /* flicker moved off <body> to #flicker-overlay to avoid full-page recomposite */
-  isolation: isolate;
+  /* isolation:isolate removed — it forces a stacking context on the root element
+     which breaks z-index layering on Chrome < 94 and causes compositing bugs */
 }
 
-/* CRT scanline overlay — static gradient, no animation = zero repaint cost */
+/* Combined scanline + grid overlay — ONE composite layer instead of two.
+   Merging body::before (scanlines) and body::after (grid) saves a full GPU layer. */
 body::before {
   content: '';
-  position: fixed; inset: 0; z-index: 999;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.10) 2px,
-    rgba(0,0,0,0.10) 4px
-  );
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0; /* explicit fallback for Chrome < 87 */
+  inset: 0;
+  z-index: 999;
+  background:
+    /* scanlines */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.10) 2px,
+      rgba(0,0,0,0.10) 4px
+    ),
+    /* grid */
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 100% 4px, 60px 60px, 60px 60px;
   pointer-events: none;
-  /* No animation, no will-change — static overlay is GPU-free */
+  /* No will-change here — static overlay, no animation, zero repaint cost */
 }
 
-/* Flicker lives on its own composited layer, not the root.
-   Uses a near-black background that flashes to transparent — same visual effect
-   as animating body opacity but isolated to one GPU layer. */
+/* body::after freed up — grid is now inside body::before above */
+body::after { display: none; }
+
+/* #flicker-overlay: isolated composited layer for the CRT flicker effect */
 #flicker-overlay {
-  position: fixed; inset: 0; z-index: 998;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  inset: 0;
+  z-index: 998;
   pointer-events: none;
   background: var(--bg);
   animation: flickerOverlay 7s ease-in-out infinite;
   will-change: opacity;
+  contain: strict; /* isolates layout/paint/size — prevents affecting surrounding elements */
 }
 
 @keyframes flickerOverlay {
@@ -75,20 +90,6 @@ body::before {
   96%      { opacity: 0.35; }
   97%, 100% { opacity: 0; }
 }
-
-/* Grid overlay */
-body::after {
-  content: '';
-  position: fixed; inset: 0; z-index: 0;
-  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
-
-/* Removed: * { position: relative; z-index: 1; }
-   This rule created a new stacking context on EVERY element, completely
-   breaking z-index layering and causing random render/paint glitches.
-   Stacking contexts are now set only where explicitly needed. */
 
 /* ── ANIMATIONS ── */
 @keyframes flicker {
@@ -139,10 +140,14 @@ body::after {
 
 /* ── MISC ELEMENTS ── */
 #vine-canvas {
-  position: fixed; inset: 0; z-index: 0;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
   opacity: 0.18;
   will-change: contents;
+  touch-action: none; /* lets scroll events pass through on iOS/Android */
 }
 
 .spore {
@@ -163,8 +168,12 @@ nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 1.2rem clamp(1.5rem, 5vw, 4rem);
   background: rgba(6,8,16,0.88);
+  -webkit-backdrop-filter: blur(12px); /* Safari */
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  /* contain:layout+style isolates the backdrop-filter so it only repaints
+     the nav bar on scroll — not the entire page */
+  contain: layout style;
 }
 
 .nav-logo {
@@ -191,7 +200,12 @@ nav a:hover { color: var(--st-red); }
 
 /* ── HERO ── */
 header {
-  height: 120svh; min-height: 120svh;
+  /* svh is Chrome 108+ only — use vh as base with dvh override for modern mobile */
+  height: 120vh;
+  min-height: 120vh;
+  /* Override with dvh on browsers that support it (Chrome 108+, Safari 15.4+) */
+  height: 120dvh;
+  min-height: 120dvh;
   display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
   padding: 15rem clamp(1.5rem, 6vw, 4rem) 3rem;
   position: relative;
@@ -268,24 +282,27 @@ header > *:not(.hero-video-wrap) { position: relative; z-index: 2; }
 
 /* ── H1 ── */
 h1 {
-  font-family: 'ITC Benguiat';
+  font-family: 'ITC Benguiat', Georgia, 'Times New Roman', serif; /* explicit fallback chain */
   align-self: center; text-align: center;
   font-weight: normal;
-  font-display: block;
   font-size: clamp(3rem, 14vw, 14rem);
   line-height: 0.68;
   letter-spacing: -0.05em;
   text-transform: uppercase;
   display: inline-block;
   color: transparent;
+  -webkit-text-fill-color: transparent; /* explicit for WebKit — prevents fallback to colour fill on old Chrome */
   -webkit-text-stroke: 3px #ff3b3b;
+  paint-order: stroke fill; /* stroke renders behind fill — fixes invisible text on Chrome 88-99 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1 .outline, h1 .big, h1 .year {
   color: transparent;
+  -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 3px #ff3b3b;
+  paint-order: stroke fill;
   vertical-align: top;
   position: relative;
   bottom: -15%;
@@ -1058,13 +1075,19 @@ footer a { color: var(--st-red); text-decoration: none; }
 @media (max-width: 768px) {
   h1 {
     font-size: clamp(3.5rem, 18vw, 9rem);
-    font-display: block;
     line-height: 0.65; letter-spacing: -0.05em;
     -webkit-text-stroke: 2px #ff3b3b;
+    -webkit-text-fill-color: transparent;
+    paint-order: stroke fill;
     -webkit-font-smoothing: antialiased;
     transform: scale(0.95);
   }
-  h1 .outline, h1 .big, h1 .year { -webkit-text-stroke: 2px #ff3b3b; bottom: -12%; }
+  h1 .outline, h1 .big, h1 .year {
+    -webkit-text-stroke: 2px #ff3b3b;
+    -webkit-text-fill-color: transparent;
+    paint-order: stroke fill;
+    bottom: -12%;
+  }
   h1 .big  { font-size: clamp(6rem, 20vw, 11rem); left: 0; }
   h1 .year { font-size: clamp(3rem, 16vw, 8rem); left: 0; top: 6%; }
   h1::before { width: 100%; height: 6px; border: 2px solid #ff2a2a; top: -14px; }
@@ -1096,7 +1119,8 @@ footer a { color: var(--st-red); text-decoration: none; }
   }
 
   header {
-   height: 120dvh; min-height: 120dvh;
+    height: 120vh; min-height: 120vh;
+    height: 120dvh; min-height: 120dvh;
   }
   .hero-cta {
   flex-direction: column;
@@ -1402,5 +1426,3 @@ footer a { color: var(--st-red); text-decoration: none; }
     }
  
 }
-
-
