@@ -517,9 +517,84 @@ function confirmPayment() {
   window.handleScreenshotUpload = handleScreenshotUpload;
   window.removeScreenshot     = removeScreenshot;
   window.confirmPayment       = confirmPayment;
+
+
+    (function initMarquee() {
+    const SPONSORS = [
+      { img: 'src/sponsors/Adan_tech.jpeg'},
+      { img: 'src/sponsors/Flair.png' },
+      { img: 'src/sponsors/Konkan.png' },
+      { img: 'src/sponsors/layerswrap.png' },
+      { img: 'src/sponsors/marine.png'   },
+      { img: 'src/sponsors/Mssunder.png'   },
+      { img: 'src/sponsors/TPMlogo.png'    },
+    ];
+ 
+    const TIER_LABELS = {
+      title:    'Title Sponsor',
+      platinum: 'Platinum',
+      gold:     'Gold',
+      silver:   'Silver',
+    };
+ 
+    const track = document.getElementById('marquee-track');
+    if (!track) return;
+ 
+    function buildItem(sp) {
+      const item = document.createElement('div');
+      item.className = 'sponsor-item';
+      item.setAttribute('aria-label', sp.name + ' — ' + TIER_LABELS[sp.tier]);
+ 
+      const logoBlock = document.createElement('div');
+      logoBlock.className = 'sponsor-logo-block';
+ 
+      if (sp.img) {
+        const img = document.createElement('img');
+        img.src = sp.img;
+        img.alt = sp.name + ' logo';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        logoBlock.appendChild(img);
+      } else {
+        logoBlock.textContent = sp.icon;
+      }
+ 
+      const textWrap = document.createElement('div');
+ 
+      const nameEl = document.createElement('span');
+      nameEl.className = 'sponsor-name';
+      nameEl.textContent = sp.name;
+ 
+      const tierEl = document.createElement('span');
+      tierEl.className = 'sponsor-tier tier-' + sp.tier;
+      tierEl.textContent = TIER_LABELS[sp.tier];
+ 
+      textWrap.appendChild(nameEl);
+      textWrap.appendChild(tierEl);
+ 
+      item.appendChild(logoBlock);
+      item.appendChild(textWrap);
+      return item;
+    }
+ 
+    // Build one set, then duplicate it for seamless infinite loop
+    // (CSS animation goes from 0 → -50%, so the second copy fills the gap)
+    const frag = document.createDocumentFragment();
+    [...SPONSORS, ...SPONSORS].forEach(sp => frag.appendChild(buildItem(sp)));
+    track.appendChild(frag);
+ 
+    // Slow down on mobile (fewer pixels to fill)
+    if (window.innerWidth < 768) {
+      track.style.animationDuration = '18s';
+    }
+  })();
+
  
 
 }); // end DOMContentLoaded
+
+
+
 
 
 // ============================================================
