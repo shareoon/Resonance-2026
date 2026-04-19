@@ -313,20 +313,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── 16. Registration form submit ─────────────────────────
   const WA_LINKS = {
     'hardware-hackathon': { label: 'Hardware Hackathon',   url: 'https://chat.whatsapp.com/BvkZ9wo6qytBPr3U8kzlOM' },
-    'robo-prix':          { label: 'Robo Race',            url: 'https://chat.whatsapp.com/DpmGXBlQ6vDJ7BqZeptMW4?mode=gi_t' },
+    'robo-prix':          { label: 'Robo Prix',            url: 'https://chat.whatsapp.com/DpmGXBlQ6vDJ7BqZeptMW4?mode=gi_t' },
     'robo-soccer':        { label: 'Robo Soccer',          url: 'https://chat.whatsapp.com/G3Z9Rvvazm7I7s3UQNN1me?mode=gi_t' },
     'robo-sumo':          { label: 'Robo Sumo',            url: 'https://chat.whatsapp.com/DGA3qhNPDA1JeQq1eY9wKV?mode=gi_t' },
-    'lfr':                { label: 'LFR',                  url: '#https://chat.whatsapp.com/HbqxTyeViHp1qRJbHaka8Q?mode=gi_t' },
-    'pcb-design':         { label: 'PCB Design',           url: '#https://chat.whatsapp.com/LMCxOLSa5EIFuVdKqwLPpD?mode=gi_t' },
+    'lfr':                { label: 'LFR',                   url: 'https://chat.whatsapp.com/HbqxTyeViHp1qRJbHaka8Q?mode=gi_t' },
+    'pcb-design':         { label: 'PCB Design',           url:  'https://chat.whatsapp.com/LMCxOLSa5EIFuVdKqwLPpD?mode=gi_t' },
     'ideathon':           { label: 'Ideathon',             url: 'https://chat.whatsapp.com/CC8uW81BUIDLVe3btv1ClK?mode=gi_t' },
     'quizzards':          { label: 'Tech Quiz',            url: 'https://chat.whatsapp.com/GgyiQk1IrGX0S5vvjlWY6p?mode=gi_t' },
     'treasure-hunt':      { label: 'Treasure Hunt',        url: 'https://chat.whatsapp.com/H3OirCm1ft09CkNMSRkh5N?mode=gi_t' },
     'fifa26':             { label: 'FIFA 26',              url: 'https://chat.whatsapp.com/D6qg9H8H7vqJdSLNEEX4Yq?mode=gi_t' },
     'project':            { label: 'Project Presentation',  url: 'https://chat.whatsapp.com/FG7vPkLKwG197OefrsjMfc?mode=gi_t' },
     'photography':        { label: 'Photography',          url: 'https://chat.whatsapp.com/C8wpdm9MOg74N1vHh3ZF5w' },
-    'reel':               { label: 'Reel making',                 url: 'https://chat.whatsapp.com/D59dmYaI5azFAcmn2GykCu' },
+    'reel':               { label: 'Reel',                 url: 'https://chat.whatsapp.com/D59dmYaI5azFAcmn2GykCu' },
     'prompt-mania':       { label: 'Prompt Mania',         url: 'https://chat.whatsapp.com/GYTy1eUHQXlKjTNwiGNNOR?mode=gi_t' },
-    'meme':              { label: 'Meme making',                 url: 'https://chat.whatsapp.com/FkNXLpHU6PQH2VXfvUmxMt?mode=gi_t'}
+    'meme':              { label: 'Meme',                 url: 'https://chat.whatsapp.com/FkNXLpHU6PQH2VXfvUmxMt?mode=gi_t'}
   };
  
   // UPI config — replace with actual UPI ID and deeplink base
@@ -930,4 +930,43 @@ function confirmPayment() {
   });
   wall.appendChild(frag);
   section.appendChild(wall);
+})();
+
+// ── F. MOBILE NAV OVERLAY ────────────────────────────────────
+(function initMobileNav() {
+  const toggle  = document.getElementById('nav-toggle');
+  const overlay = document.querySelector('.mobile-nav-overlay');
+  if (!toggle || !overlay) return;
+
+  // Lock / unlock body scroll to match the registration screen pattern
+  function lockScroll()   { document.body.style.overflow = 'hidden'; }
+  function unlockScroll() { document.body.style.overflow = '';       }
+
+  // Open / close helpers
+  function openNav()  { toggle.checked = true;  lockScroll();   }
+  function closeNav() { toggle.checked = false; unlockScroll(); }
+
+  // Sync scroll lock whenever the checkbox state changes
+  // (covers both the hamburger label click and the ✕ label click)
+  toggle.addEventListener('change', () => {
+    toggle.checked ? lockScroll() : unlockScroll();
+  });
+
+  // Auto-close when any overlay link is tapped
+  overlay.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      // Small delay so the smooth-scroll starts before overlay hides
+      setTimeout(closeNav, 80);
+    });
+  });
+
+  // Close on Escape key (accessibility)
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && toggle.checked) closeNav();
+  });
+
+  // Close if user somehow scrolls (e.g. two-finger trackpad on a touch laptop)
+  window.addEventListener('scroll', () => {
+    if (toggle.checked) closeNav();
+  }, { passive: true });
 })();

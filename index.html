@@ -32,6 +32,7 @@
 
 <canvas id="vine-canvas"></canvas>
 
+<input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox" aria-hidden="true">
 <nav>
   <div class="nav-logo">Resonance<span>'26</span></div>
   <ul>
@@ -39,9 +40,24 @@
     <li><a href="#competitions">Competitions</a></li>
     <li><a href="#schedule">Schedule</a></li>
     <li><a href="#register">Register</a></li>
+    <li><a href="#sponsors">Our Sponsors</a></li>
   </ul>
   <a href="#register" class="nav-register">Register Now</a>
+  <label for="nav-toggle" class="nav-hamburger" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </label>
 </nav>
+<div class="mobile-nav-overlay">
+  <label for="nav-toggle" class="overlay-close" aria-label="Close navigation">✕</label>
+  <div class="overlay-nav-logo">Resonance<span>'26</span></div>
+  <ul class="overlay-nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#competitions">Competitions</a></li>
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#register">Register Now</a></li>
+    <li><a href="#sponsors">Our Sponsors</a></li>
+  </ul>
+</div>
 
 <header>
   <div class="hero-video-wrap">
@@ -331,6 +347,7 @@
   </div>
 </section>
 
+
 <section id="sponsors">
   <p class="sec-label reveal">Sponsors</p>
   <h2 class="reveal">Backed by<br><em>the best.</em></h2>
@@ -415,7 +432,7 @@
               <label class="checkbox-item"><input type="checkbox" value="pcb-design" data-fee="450"> <span>📟 PCB Design — &#8377;450</span></label>
               <label class="checkbox-item"><input type="checkbox" value="ideathon" data-fee="200"> <span>&#128161; Ideathon(Shark Tank) — &#8377;200</span></label>
               <label class="checkbox-item"><input type="checkbox" value="quizzards" data-fee="100"> <span>❓ Tech Quiz — &#8377;100</span></label>
-              <label class="checkbox-item"><input type="checkbox" value="treasure-hunt" data-fee="200"> <span>🕷️ Treasure Hunt — &#8377;200</span></label>
+              <label class="checkbox-item"><input type="checkbox" value="treasure-hunt" data-fee="150"> <span>🕷️ Treasure Hunt — &#8377;150</span></label>
               <label class="checkbox-item"><input type="checkbox" value="fifa26" data-fee="100"> <span>&#127918; FIFA 26 — &#8377;100</span></label>
               <label class="checkbox-item"><input type="checkbox" value="meme" data-fee="50"> <span>😂 Meme Making — &#8377;50</span></label>
               <label class="checkbox-item"><input type="checkbox" value="photography" data-fee="50"> <span>&#128247; Photography — &#8377;50</span></label>
@@ -444,7 +461,7 @@
  
           <div class="payment-methods">
             <div class="qr-block">
-              <p class="pay-instruction">Scan QR code on your upi app or use the UPI link below to complete payment</p>
+              <p class="pay-instruction">Scan QR code in your UPI app or use the UPI link below to complete payment</p>
               <!-- QR code placeholder — replace src with your actual QR image -->
               <div class="qr-placeholder" id="qr-container"></div>
               <div class="upi-link-block">
@@ -484,7 +501,7 @@
         <div class="reg-success" id="reg-success" style="display:none;">
           <div class="icon">&#10022;</div>
           <h3>You're In.</h3>
-          <p>Registration received! Your screenshot is under review. Join in to your Whatsapp groups for further instructions.</p>
+          <p>Registration received! Your screenshot is under review. Join your WhatsApp groups for further instructions.</p>
           <div class="wa-links-section" id="wa-links-section">
             <p class="wa-links-title">&#128172; Join your event WhatsApp groups:</p>
             <div class="wa-links-grid" id="wa-links-grid">
