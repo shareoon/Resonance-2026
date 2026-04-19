@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'pcb-design':         { label: 'PCB Design',           url: '#https://chat.whatsapp.com/LMCxOLSa5EIFuVdKqwLPpD?mode=gi_t' },
     'ideathon':           { label: 'Ideathon',             url: 'https://chat.whatsapp.com/CC8uW81BUIDLVe3btv1ClK?mode=gi_t' },
     'quizzards':          { label: 'Tech Quiz',            url: 'https://chat.whatsapp.com/GgyiQk1IrGX0S5vvjlWY6p?mode=gi_t' },
-    'treasure-hunt':      { label: 'Treasure Hunt',        url: 'https://chat.whatsapp.com/IxjDeRRQDsHGns1dGPU0yl?mode=gi_t' },
+    'treasure-hunt':      { label: 'Treasure Hunt',        url: 'https://chat.whatsapp.com/H3OirCm1ft09CkNMSRkh5N?mode=gi_t' },
     'fifa26':             { label: 'FIFA 26',              url: 'https://chat.whatsapp.com/D6qg9H8H7vqJdSLNEEX4Yq?mode=gi_t' },
     'project':            { label: 'Project Presentation',  url: 'https://chat.whatsapp.com/FG7vPkLKwG197OefrsjMfc?mode=gi_t' },
     'photography':        { label: 'Photography',          url: 'https://chat.whatsapp.com/C8wpdm9MOg74N1vHh3ZF5w' },
