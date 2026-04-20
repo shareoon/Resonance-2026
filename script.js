@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
  
   // UPI config — replace with actual UPI ID and deeplink base
-  const UPI_ID = 'shibusharon181@okhdfcbank';
+  const UPI_ID = 'shibusharon181-1@okhdfcbank';
   // UPI deeplink will be built dynamically with the correct amount
  
   // Live fee total calculation
