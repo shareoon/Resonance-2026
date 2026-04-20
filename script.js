@@ -529,7 +529,7 @@ function confirmPayment() {
       { img: 'src/sponsors/Mssunder.png'   },
       { img: 'src/sponsors/TPMlogo.png'    },
       { img: 'src/sponsors/GAURVED.jpeg'},
-      { img: 'src/sponsors/Aerflo-Brand.jpeg'}
+      { img: 'src/sponsors/Aerflo-Brand.png'}
     ];
  
     const TIER_LABELS = {
