@@ -531,7 +531,8 @@ function confirmPayment() {
       { img: 'src/sponsors/GAURVED.jpeg'},
       { img: 'src/sponsors/Aerflo-Brand.png'},
       { img: 'src/sponsors/Polynova.jpeg'},
-      { img: 'src/sponsors/Fishermans.jpeg'}
+      { img: 'src/sponsors/Fishermans.jpeg'},
+      { img: 'src/sponsors/Swagath.jpeg'}
     ];
  
     const TIER_LABELS = {
