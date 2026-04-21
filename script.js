@@ -529,7 +529,9 @@ function confirmPayment() {
       { img: 'src/sponsors/Mssunder.png'   },
       { img: 'src/sponsors/TPMlogo.png'    },
       { img: 'src/sponsors/GAURVED.jpeg'},
-      { img: 'src/sponsors/Aerflo-Brand.png'}
+      { img: 'src/sponsors/Aerflo-Brand.png'},
+      { img: 'src/sponsors/Polynova.jpeg'},
+      { img: 'src/sponsors/Fishermans.jpeg'}
     ];
  
     const TIER_LABELS = {
