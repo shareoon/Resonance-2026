@@ -112,7 +112,8 @@
   <h2 class="reveal">15 arenas<br><em>for Champions.</em></h2>
  
   <div class="comp-grid reveal">
-    <div class="comp-card">
+    <div class="comp-card comp-card--sold-out">
+      <div class="sold-out-stamp">SOLD OUT</div>
       <div class="comp-icon">⚙️</div>
       <h3>The Gate protocol</h3><h4>Hardware Hackathon</h4>
       <p>Build innovative hardware solutions from scratch. Design, prototype, and present a working hardware project under 8 hours.</p>
@@ -121,7 +122,7 @@
         <div class="comp-meta-item"><span class="comp-meta-key">Prize</span><span class="comp-meta-val">&#8377;15,000</span></div>
         <div class="comp-meta-item"><span class="comp-meta-key">Type</span><span class="comp-meta-val">Main Event</span></div>
       </div>
-      <button class="btn-brochure" onclick="window.open('src/Hardwarehackathon_Resonance.pdf', '_blank')">View Brochure</button>
+      <button class="btn-brochure btn-brochure--disabled" disabled>View Brochure</button>
     </div>
  
     <div class="comp-card">
@@ -424,7 +425,7 @@
           <div class="form-group">
             <label>Select Event(s) to Participate</label>
             <div class="checkbox-group">
-              <label class="checkbox-item"><input type="checkbox" value="hardware-hackathon" data-fee="750"> <span>⚙️ Hardware Hackathon — &#8377;750</span></label>
+              <label class="checkbox-item checkbox-item--sold-out"><input type="checkbox" value="hardware-hackathon" data-fee="750" disabled> <span>⚙️ <s>Hardware Hackathon</s> — &#8377;750 <span class="sold-out-tag">SOLD OUT</span></span></label>
               <label class="checkbox-item"><input type="checkbox" value="robo-prix" data-fee="300"> <span>&#129302; Robo Race — &#8377;300 Re-entry 200</span></label>
               <label class="checkbox-item"><input type="checkbox" value="robo-soccer" data-fee="300"> <span>&#9917; Robo Soccer — &#8377;300</span></label>
               <label class="checkbox-item"><input type="checkbox" value="robo-sumo" data-fee="350"> <span>&#129354; Robo Sumo — &#8377;350</span></label>

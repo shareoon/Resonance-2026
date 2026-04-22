@@ -1415,3 +1415,77 @@ footer a { color: var(--st-red); text-decoration: none; }
   .fee-summary strong { color: #7aaaff; font-size: 1rem; }
 
 }
+
+/* ── SOLD OUT — Comp Card ── */
+.comp-card--sold-out {
+  position: relative;
+  overflow: hidden;
+}
+
+.comp-card--sold-out::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sold-out-stamp {
+  position: absolute;
+  size:100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-22deg);
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #cc0000;
+  border: 3px solid #cc0000;
+  padding: 0.35rem 1rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 0 18px rgba(200,0,0,0.55), inset 0 0 8px rgba(200,0,0,0.2);
+  opacity: 0.92;
+  z-index: 2;
+  pointer-events: none;
+  background: rgba(10,0,0,0.6);
+  text-shadow: 0 0 12px rgba(220,0,0,0.8);
+}
+
+/* ── SOLD OUT — Brochure button disabled ── */
+.btn-brochure--disabled {
+  opacity: 0.35;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  filter: grayscale(0.5);
+}
+
+/* ── SOLD OUT — Register checkbox tag ── */
+.checkbox-item--sold-out {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.checkbox-item--sold-out s {
+  color: var(--muted);
+}
+
+.sold-out-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #cc0000;
+  border: 1px solid #cc0000;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  text-shadow: 0 0 8px rgba(200,0,0,0.6);
+  box-shadow: 0 0 6px rgba(200,0,0,0.25);
+  vertical-align: middle;
+}
